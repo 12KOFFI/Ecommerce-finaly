@@ -12,8 +12,24 @@ const Collection = () => {
   const [subCategory, setSubCategory] = useState([]);
   const [sortType, setSortType] = useState("relavent");
 
-  // verifier si le produit est dans la catégorie ou la sous-catégorie sélectionnée
-  // si oui, le produit est affiché, sinon il est  filtré et retiré de la liste des produits affichés
+  const categories = [
+    { value: "Écouteurs", label: "Écouteurs" },
+    { value: "Casques", label: "Casques" },
+    { value: "Montres", label: "Montres Connectées" },
+    { value: "Smartphones", label: "Smartphones" },
+    { value: "Ordinateurs", label: "Ordinateurs" },
+    { value: "Tablettes", label: "Tablettes" },
+    { value: "Caméras", label: "Caméras" },
+    { value: "Accessoires", label: "Accessoires" }
+  ];
+
+  const subCategories = [
+    { value: "Haut de gamme", label: "Haut de gamme" },
+    { value: "Milieu de gamme", label: "Milieu de gamme" },
+    { value: "Entrée de gamme", label: "Entrée de gamme" },
+    { value: "Promotions", label: "Promotions" },
+    { value: "Nouveautés", label: "Nouveautés" }
+  ];
 
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
@@ -31,7 +47,6 @@ const Collection = () => {
     }
   };
 
-  // appliquer le filtre sur les produits en fonction de la catégorie et de la sous-catégorie sélectionnée
   const applyFilter = () => {
     let productsCopy = products.slice();
 
@@ -41,8 +56,6 @@ const Collection = () => {
       );
     }
 
-    //   verifie que chauqe item ou produit.cotegorie  est inclu  dans  le tableau de category
-    // si oui on le garde sinon on le retire de la liste des produits affichés
     if (category.length > 0) {
       productsCopy = productsCopy.filter((item) =>
         category.includes(item.category)
@@ -72,6 +85,7 @@ const Collection = () => {
         break;
     }
   };
+
   useEffect(() => {
     applyFilter();
   }, [category, subCategory, search, showSearch, products]);
@@ -82,127 +96,94 @@ const Collection = () => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
-      {/* section de gauche  filter options*/}
-
-      <div className="min-w-60">
-        <p
-          onClick={() => setShowFilter(!showFilter)}
-          className="my-2 text-xl flex items-center cursor-pointer gap-2"
-        >
-          FILTERS
+      {/* Section des filtres */}
+      <div className="min-w-64 bg-white rounded-lg shadow-sm p-4">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-xl font-medium text-gray-800">Filtres</p>
           <img
-            className={`h-3 sm:hidden ${showFilter ? "rotate-90" : ""}`}
+            onClick={() => setShowFilter(!showFilter)}
+            className={`h-3 cursor-pointer sm:hidden transition-transform duration-300 ${showFilter ? "rotate-180" : ""}`}
             src={assets.dropdown_icon}
-            alt=""
+            alt="Afficher/Masquer les filtres"
           />
-        </p>
-        {/* filter category */}
-        <div
-          className={` border border-gray-300 pl-5 py-3 mt-6 ${
-            showFilter ? "" : "hidden"
-          } sm:block`}
-        >
-          <p className="mb-3 text-sm font-medium">CATEGORIES</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Men"}
-                onChange={toggleCategory}
-              />
-              Men
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Women"}
-                onChange={toggleCategory}
-              />
-              Women
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Kids"}
-                onChange={toggleCategory}
-              />
-              Kids
-            </p>
-          </div>
         </div>
 
-        {/* subCategory Filter */}
-        <div
-          className={` border border-gray-300 pl-5 py-3 my-5 ${
-            showFilter ? "" : "hidden"
-          } sm:block`}
-        >
-          <p className="mb-3 text-sm font-medium">TYPE</p>
-          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Topwear"}
-                onChange={toggleSubCategory}
-              />
-              Topwear
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Bottomwear"}
-                onChange={toggleSubCategory}
-              />
-              Bottomwear
-            </p>
-            <p className="flex gap-2">
-              <input
-                className="w-3"
-                type="checkbox"
-                value={"Winterwear"}
-                onChange={toggleSubCategory}
-              />
-              Winterwear
-            </p>
+        {/* Catégories */}
+        <div className={`space-y-4 ${showFilter ? "" : "hidden"} sm:block`}>
+          <div className="border-t pt-4">
+            <p className="mb-3 font-medium text-gray-700">Catégories</p>
+            <div className="flex flex-col gap-2.5">
+              {categories.map((cat) => (
+                <label key={cat.value} className="flex items-center gap-2 cursor-pointer hover:text-gray-900">
+                  <input
+                    type="checkbox"
+                    value={cat.value}
+                    onChange={toggleCategory}
+                    checked={category.includes(cat.value)}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm">{cat.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Sous-catégories */}
+          <div className="border-t pt-4">
+            <p className="mb-3 font-medium text-gray-700">Gamme de prix</p>
+            <div className="flex flex-col gap-2.5">
+              {subCategories.map((subCat) => (
+                <label key={subCat.value} className="flex items-center gap-2 cursor-pointer hover:text-gray-900">
+                  <input
+                    type="checkbox"
+                    value={subCat.value}
+                    onChange={toggleSubCategory}
+                    checked={subCategory.includes(subCat.value)}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm">{subCat.label}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* section de droite  products Right Side */}
-
+      {/* Section des produits */}
       <div className="flex-1">
-        <div className="flex justify-between text-base sm:text-2xl mb-4">
-          <Title text1={"ALL"} text2={"COLLECTIONS"} />
+        <div className="flex justify-between items-center mb-6">
+          <Title text1={"NOTRE"} text2={"COLLECTION"} />
 
-          {/* Product Sort */}
-
+          {/* Tri des produits */}
           <select
             onChange={(e) => setSortType(e.target.value)}
-            className="border-2 border-gray-300 text-sm px-2"
+            className="px-4 py-2 text-sm border rounded-lg bg-white shadow-sm cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="relavent">Sort by: Non-Trier</option>
-            <option value="low-high">Sort by: Prix Croissant</option>
-            <option value="high-low">Sort by: Prix Décroissant</option>
+            <option value="relavent">Trier par : Pertinence</option>
+            <option value="low-high">Trier par : Prix croissant</option>
+            <option value="high-low">Trier par : Prix décroissant</option>
           </select>
         </div>
 
-        {/* grid des produits Map products */}
+        {/* Grille des produits */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6">
           {filterProducts.map((item, index) => (
             <ProductItem
               key={index}
               name={item.name}
               id={item._id}
+              image={Array.isArray(item.image) ? item.image[0] : item.image}
               price={item.price}
-              image={item.image}
             />
           ))}
         </div>
+
+        {/* Message si aucun produit */}
+        {filterProducts.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            Aucun produit ne correspond à vos critères de recherche
+          </div>
+        )}
       </div>
     </div>
   );

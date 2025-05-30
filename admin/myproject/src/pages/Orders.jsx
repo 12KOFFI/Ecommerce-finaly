@@ -133,6 +133,9 @@ const Orders = ({ token }) => {
                 <p className="text-sm text-gray-600">
                   Date : {new Date(order.date).toLocaleString('fr-FR')}
                 </p>
+                <p className="text-sm text-gray-600">
+                  Statut actuel : <span className="font-medium">{getStatusLabel(order.status)}</span>
+                </p>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
