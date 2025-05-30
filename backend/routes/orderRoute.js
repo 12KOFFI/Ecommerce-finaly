@@ -3,7 +3,8 @@ import {
   getAllOrders,
   getUserOrders,
   createOrder,
-  updateOrderStatus
+  updateOrderStatus,
+  deletePendingOrder
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import userAuth from "../middleware/userAuth.js";
@@ -17,5 +18,6 @@ orderRouter.put("/status", adminAuth, updateOrderStatus);
 // Routes utilisateur
 orderRouter.get("/user", userAuth, getUserOrders);
 orderRouter.post("/create", userAuth, createOrder);
+orderRouter.delete("/:orderId", userAuth, deletePendingOrder);
 
 export default orderRouter; 

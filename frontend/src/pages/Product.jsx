@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart, navigate } = useContext(ShopContext);
   const [productData, setProductData] = useState(null);
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchProductData = () => {
     products.forEach((item) => {
@@ -22,6 +24,35 @@ const Product = () => {
   useEffect(() => {
     fetchProductData();
   }, [productId, products]);
+
+  const handleBuyNow = async () => {
+    try {
+      setLoading(true);
+      
+      // Vérifier si l'utilisateur est connecté
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Veuillez vous connecter pour acheter");
+        navigate("/login");
+        return;
+      }
+
+      // Vérifier si le produit est disponible
+      if (!productData) {
+        toast.error("Produit non disponible");
+        return;
+      }
+
+      // Ajouter au panier et rediriger vers la page de commande
+      await addToCart(productData._id);
+      navigate("/place-order");
+    } catch (error) {
+      console.error("Erreur lors de l'achat:", error);
+      toast.error("Une erreur est survenue lors de l'achat");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!productData) return <div className="opacity-0"></div>;
 
@@ -75,27 +106,36 @@ const Product = () => {
 
           <div className="flex flex-col sm:flex-row items-center sm:justify-start">
             <button
-              onClick={() => addToCart(productData._id)}
+              onClick={() => {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                  toast.error("Veuillez vous connecter pour ajouter au panier");
+                  navigate("/login");
+                  return;
+                }
+                addToCart(productData._id);
+                toast.success("Produit ajouté au panier");
+              }}
               className="bg-white border border-black text-black px-5 py-3 text-sm active:bg-gray-700 rounded-2xl mb-3 sm:mb-0 w-45"
             >
               AJOUTER AU PANIER
             </button>
             <button
-              onClick={() => {
-                addToCart(productData._id);
-                navigate("/place-order");
-              }}
-              className="bg-black text-white px-5 py-3 text-sm active:bg-gray-700 sm:ml-4 rounded-2xl w-45"
+              onClick={handleBuyNow}
+              disabled={loading}
+              className={`bg-black text-white px-5 py-3 text-sm active:bg-gray-700 sm:ml-4 rounded-2xl w-45 ${
+                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
+              }`}
             >
-              ACHETER MAINTENANT
+              {loading ? "TRAITEMENT..." : "ACHETER MAINTENANT"}
             </button>
           </div>
 
           <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
-            <p>100% Original product.</p>
-            <p>Cash on delivery is available on this product</p>
-            <p>Easy return and exchange policy within 7 days.</p>
+            <p>Produit 100% authentique.</p>
+            <p>Paiement à la livraison disponible.</p>
+            <p>Retour et échange faciles sous 7 jours.</p>
           </div>
         </div>
       </div>
@@ -104,23 +144,11 @@ const Product = () => {
       <div className="mt-20">
         <div className="flex">
           <b className="border px-5 text-sm py-3">Description</b>
-          <p className="border px-5 py-3 text-sm">Reviews(122)</p>
+          <p className="border px-5 py-3 text-sm">Avis (122)</p>
         </div>
 
         <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
-          <p>
-            An e-commerce website is an online platform that facilitates the buying and selling of
-            products or services over the internet. It serves as a virtual marketplace where
-            businesses and individuals can showcase their products, interact with customers, and
-            conduct transactions without the need for a physical presence. E-commerce websites have
-            gained immense popularity due to their convenience, accessibility, and the global reach
-            they offer.
-          </p>
-          <p>
-            E-commerce websites typically display products or services along with detailed
-            descriptions, images, and prices. Each product usually has its own dedicated page with
-            relevant information.
-          </p>
+          <p>{productData.description}</p>
         </div>
       </div>
 

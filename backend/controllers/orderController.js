@@ -72,4 +72,34 @@ export const updateOrderStatus = async (req, res) => {
     console.error(error);
     res.json({ success: false, message: error.message });
   }
+};
+
+// Delete pending order (user can only delete their own pending orders)
+export const deletePendingOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.userId;
+
+    const order = await orderModel.findById(orderId);
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Vérifier si l'ordre appartient à l'utilisateur
+    if (order.userId.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "Not authorized to delete this order" });
+    }
+
+    // Vérifier si la commande est en statut 'pending'
+    if (order.status !== 'pending') {
+      return res.status(400).json({ success: false, message: "Can only delete pending orders" });
+    }
+
+    await orderModel.findByIdAndDelete(orderId);
+    return res.status(200).json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting order:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
 }; 

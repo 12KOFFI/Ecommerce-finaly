@@ -13,18 +13,15 @@ const Add = ({ token }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("Écouteur");
+  const [category, setCategory] = useState("Écouteurs");
   const [brand, setBrand] = useState("");
   const [color, setColor] = useState("");
-  const [subCategory, setSubCategory] = useState("Topwear");
+  const [subCategory, setSubCategory] = useState("Haut de gamme");
   const [bestseller, setBestseller] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      console.log("Backend URL:", backendUrl);
-      console.log("Token:", token || localStorage.getItem("token"));
-
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
@@ -35,24 +32,10 @@ const Add = ({ token }) => {
       formData.append("color", color);
       formData.append("bestseller", bestseller);
       
-      if (image1) {
-        console.log("Image 1 size:", image1.size, "bytes");
-        formData.append("image1", image1);
-      }
-      if (image2) {
-        console.log("Image 2 size:", image2.size, "bytes");
-        formData.append("image2", image2);
-      }
-      if (image3) {
-        console.log("Image 3 size:", image3.size, "bytes");
-        formData.append("image3", image3);
-      }
-      if (image4) {
-        console.log("Image 4 size:", image4.size, "bytes");
-        formData.append("image4", image4);
-      }
-
-      console.log("Sending data to:", `${backendUrl}/api/product/add`);
+      if (image1) formData.append("image1", image1);
+      if (image2) formData.append("image2", image2);
+      if (image3) formData.append("image3", image3);
+      if (image4) formData.append("image4", image4);
 
       const response = await axios.post(
         backendUrl + "/api/product/add",
@@ -65,10 +48,8 @@ const Add = ({ token }) => {
         }
       );
 
-      console.log("Server response:", response.data);
-
       if (response.data.success) {
-        toast.success(response.data.message);
+        toast.success("Produit ajouté avec succès !");
         setName("");
         setDescription("");
         setImage1(false);
@@ -79,14 +60,11 @@ const Add = ({ token }) => {
         setBrand("");
         setColor("");
       } else {
-        console.error("Server error:", response.data);
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Échec de l'ajout du produit");
       }
     } catch (error) {
-      console.error("Full error object:", error);
-      console.error("Error response data:", error.response?.data);
-      console.error("Error status:", error.response?.status);
-      toast.error(error.response?.data?.message || "Failed to upload product. Please try again.");
+      console.error("Erreur lors de l'ajout du produit:", error);
+      toast.error(error.response?.data?.message || "Échec de l'ajout du produit. Veuillez réessayer.");
     }
   };
 
@@ -96,7 +74,7 @@ const Add = ({ token }) => {
       className="flex flex-col w-full items-start gap-3"
     >
       <div>
-        <p className="mb-2">Upload Image</p>
+        <p className="mb-2">Télécharger les images</p>
         <div className="flex gap-2">
           {[1, 2, 3, 4].map((num) => {
             const img = eval(`image${num}`);
@@ -106,7 +84,7 @@ const Add = ({ token }) => {
                 <img
                   className="w-20 cursor-pointer"
                   src={!img ? assets.upload_area : URL.createObjectURL(img)}
-                  alt=""
+                  alt={`Image ${num}`}
                 />
                 <input
                   onChange={(e) => setImg(e.target.files[0])}
@@ -121,11 +99,11 @@ const Add = ({ token }) => {
       </div>
 
       <div className="w-full">
-        <p className="mb-2">Product name</p>
+        <p className="mb-2">Nom du produit</p>
         <input
           className="w-full max-w-[500px] px-3 py-2"
           type="text"
-          placeholder="type here"
+          placeholder="Saisissez le nom du produit"
           required
           onChange={(e) => setName(e.target.value)}
           value={name}
@@ -133,18 +111,18 @@ const Add = ({ token }) => {
       </div>
 
       <div className="w-full">
-        <p className="mb-2">Product description</p>
+        <p className="mb-2">Description du produit</p>
         <textarea
           onChange={(e) => setDescription(e.target.value)}
           value={description}
           className="w-full max-w-[500px] px-3 py-2"
-          placeholder="write content here"
+          placeholder="Décrivez le produit en détail"
           required
         />
       </div>
 
       <div className="w-full">
-        <p className="mb-2">Brand</p>
+        <p className="mb-2">Marque</p>
         <input
           className="w-full max-w-[500px] px-3 py-2"
           type="text"
@@ -155,7 +133,7 @@ const Add = ({ token }) => {
       </div>
 
       <div className="w-full">
-        <p className="mb-2">Color</p>
+        <p className="mb-2">Couleur</p>
         <input
           className="w-full max-w-[500px] px-3 py-2"
           type="text"
@@ -167,43 +145,46 @@ const Add = ({ token }) => {
 
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:gap-8">
         <div>
-          <p className="mb-2">Product Category</p>
+          <p className="mb-2">Catégorie</p>
           <select
             onChange={(e) => setCategory(e.target.value)}
             value={category}
             className="w-full px-3 py-2"
           >
-            <option value="Écouteur">Écouteur</option>
+            <option value="Écouteurs">Écouteurs</option>
             <option value="Casques">Casques</option>
-            <option value="Montres">Montres</option>
+            <option value="Montres">Montres Connectées</option>
             <option value="Smartphones">Smartphones</option>
-            <option value="Ordinateur">Ordinateur</option>
-            <option value="Camera">Camera</option>
-            <option value="Accessoire">Accessoire</option>
+            <option value="Ordinateurs">Ordinateurs</option>
+            <option value="Tablettes">Tablettes</option>
+            <option value="Caméras">Caméras</option>
+            <option value="Accessoires">Accessoires</option>
           </select>
         </div>
 
         <div>
-          <p className="mb-2">Sub Category</p>
+          <p className="mb-2">Sous-catégorie</p>
           <select
             onChange={(e) => setSubCategory(e.target.value)}
             value={subCategory}
             className="w-full px-3 py-2"
           >
-            <option value="Topwear">Topwear</option>
-            <option value="Bottomwear">Bottomwear</option>
-            <option value="Winterwear">Winterwear</option>
+            <option value="Haut de gamme">Haut de gamme</option>
+            <option value="Milieu de gamme">Milieu de gamme</option>
+            <option value="Entrée de gamme">Entrée de gamme</option>
+            <option value="Promotions">Promotions</option>
+            <option value="Nouveautés">Nouveautés</option>
           </select>
         </div>
 
         <div>
-          <p className="mb-2">Product Price</p>
+          <p className="mb-2">Prix (€)</p>
           <input
             onChange={(e) => setPrice(e.target.value)}
             value={price}
             className="w-full px-3 py-2 sm:w-[120px]"
             type="number"
-            placeholder="25"
+            placeholder="99.99"
             required
           />
         </div>
@@ -216,8 +197,8 @@ const Add = ({ token }) => {
           type="checkbox"
           id="bestseller"
         />
-        <label className="cursor-pointer " htmlFor="bestseller">
-          Add to bestseller
+        <label className="cursor-pointer" htmlFor="bestseller">
+          Ajouter aux meilleures ventes
         </label>
       </div>
 

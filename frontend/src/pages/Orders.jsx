@@ -3,35 +3,65 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import axios from "axios";
 import { backendUrl } from "../config/config";
+import { toast } from "react-toastify";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Orders = () => {
   const { currency } = useContext(ShopContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(`${backendUrl}/api/orders/user`, {
+        headers: { token }
+      });
+
+      if (response.data.success) {
+        setOrders(response.data.orders);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Erreur lors du chargement des commandes:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const response = await axios.delete(`${backendUrl}/api/orders/${orderId}`, {
+        headers: { token }
+      });
+
+      if (response.data.success) {
+        toast.success("Commande supprimée avec succès");
+        fetchOrders();
+      } else {
+        toast.error(response.data.message || "Échec de la suppression de la commande");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      toast.error(error.response?.data?.message || "Échec de la suppression de la commande");
+    }
+  };
+
+  const openDeleteModal = (orderId) => {
+    setSelectedOrderId(orderId);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(`${backendUrl}/api/orders/user`, {
-          headers: { token }
-        });
-
-        if (response.data.success) {
-          setOrders(response.data.orders);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        setLoading(false);
-      }
-    };
-
     fetchOrders();
   }, []);
 
@@ -47,10 +77,10 @@ const Orders = () => {
     return (
       <div className="border-t pt-16">
         <div className="text-2xl mb-8">
-          <Title text1={"MY"} text2={"ORDERS"} />
+          <Title text1={"MES"} text2={"COMMANDES"} />
         </div>
         <div className="text-center text-gray-600">
-          Please login to view your orders
+          Veuillez vous connecter pour voir vos commandes
         </div>
       </div>
     );
@@ -60,10 +90,10 @@ const Orders = () => {
     return (
       <div className="border-t pt-16">
         <div className="text-2xl mb-8">
-          <Title text1={"MY"} text2={"ORDERS"} />
+          <Title text1={"MES"} text2={"COMMANDES"} />
         </div>
         <div className="text-center text-gray-600">
-          You haven't placed any orders yet
+          Vous n'avez pas encore passé de commande
         </div>
       </div>
     );
@@ -86,10 +116,27 @@ const Orders = () => {
     }
   };
 
+  const getStatusText = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'En attente';
+      case 'processing':
+        return 'En traitement';
+      case 'shipped':
+        return 'Expédié';
+      case 'delivered':
+        return 'Livré';
+      case 'cancelled':
+        return 'Annulé';
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="border-t pt-16">
       <div className="text-2xl mb-8">
-        <Title text1={"MY"} text2={"ORDERS"} />
+        <Title text1={"MES"} text2={"COMMANDES"} />
       </div>
       <div className="space-y-6">
         {orders.map((order) => (
@@ -99,14 +146,14 @@ const Orders = () => {
           >
             <div className="flex justify-between items-start mb-4">
               <div>
-                <p className="text-sm text-gray-600">Order ID: {order._id}</p>
+                <p className="text-sm text-gray-600">Commande N°: {order._id}</p>
                 <p className="text-sm text-gray-600">
                   Date: {new Date(order.date).toLocaleDateString()}
                 </p>
               </div>
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${getStatusColor(order.status)}`}></div>
-                <p className="text-sm font-medium capitalize">{order.status}</p>
+                <p className="text-sm font-medium">{getStatusText(order.status)}</p>
               </div>
             </div>
 
@@ -124,9 +171,9 @@ const Orders = () => {
                   <div className="flex-1">
                     <h3 className="font-medium">{item.name}</h3>
                     <div className="mt-1 text-sm text-gray-600">
-                      <p>Quantity: {item.quantity}</p>
+                      <p>Quantité: {item.quantity}</p>
                       <p>
-                        Price: {currency}
+                        Prix: {currency}
                         {item.price}
                       </p>
                     </div>
@@ -137,19 +184,37 @@ const Orders = () => {
 
             <div className="mt-4 pt-4 border-t flex justify-between items-center">
               <div className="text-right">
-                <p className="text-sm text-gray-600">Total Amount:</p>
+                <p className="text-sm text-gray-600">Montant total:</p>
                 <p className="text-lg font-medium">
                   {currency}
                   {order.totalAmount}
                 </p>
               </div>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:bg-gray-800 transition-colors">
-                Track Order
-              </button>
+              {order.status === 'pending' && (
+                <button
+                  onClick={() => openDeleteModal(order._id)}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+                >
+                  Supprimer la commande
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          if (selectedOrderId) {
+            handleDeleteOrder(selectedOrderId);
+          }
+          setModalOpen(false);
+        }}
+        title="Supprimer la commande"
+        message="Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible."
+      />
     </div>
   );
 };

@@ -6,15 +6,15 @@ import { toast } from "react-toastify";
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("tous");
 
   const statusOptions = [
-    "all",
-    "pending",
-    "processing",
-    "shipped",
-    "delivered",
-    "cancelled"
+    { value: "tous", label: "Tous" },
+    { value: "pending", label: "En attente" },
+    { value: "processing", label: "En traitement" },
+    { value: "shipped", label: "Expédié" },
+    { value: "delivered", label: "Livré" },
+    { value: "cancelled", label: "Annulé" }
   ];
 
   useEffect(() => {
@@ -31,8 +31,8 @@ const Orders = ({ token }) => {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("Failed to fetch orders");
+      console.error("Erreur lors du chargement des commandes:", error);
+      toast.error("Impossible de charger les commandes");
       setLoading(false);
     }
   };
@@ -51,14 +51,14 @@ const Orders = ({ token }) => {
       );
 
       if (response.data.success) {
-        toast.success("Order status updated successfully");
+        toast.success("Statut de la commande mis à jour avec succès");
         fetchOrders();
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Échec de la mise à jour du statut");
       }
     } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("Failed to update order status");
+      console.error("Erreur lors de la mise à jour du statut:", error);
+      toast.error("Impossible de mettre à jour le statut de la commande");
     }
   };
 
@@ -79,7 +79,12 @@ const Orders = ({ token }) => {
     }
   };
 
-  const filteredOrders = selectedStatus === "all"
+  const getStatusLabel = (statusValue) => {
+    const status = statusOptions.find(s => s.value === statusValue);
+    return status ? status.label : statusValue;
+  };
+
+  const filteredOrders = selectedStatus === "tous"
     ? orders
     : orders.filter(order => order.status.toLowerCase() === selectedStatus);
 
@@ -94,17 +99,17 @@ const Orders = ({ token }) => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Orders Management</h1>
+        <h1 className="text-2xl font-bold">Gestion des Commandes</h1>
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Filter by status:</label>
+          <label className="text-sm font-medium">Filtrer par statut :</label>
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
             className="border rounded-md px-3 py-1.5 text-sm"
           >
             {statusOptions.map(status => (
-              <option key={status} value={status}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
+              <option key={status.value} value={status.value}>
+                {status.label}
               </option>
             ))}
           </select>
@@ -120,13 +125,13 @@ const Orders = ({ token }) => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <p className="text-sm text-gray-600">
-                  Order ID: <span className="font-medium">{order._id}</span>
+                  N° de commande : <span className="font-medium">{order._id}</span>
                 </p>
                 <p className="text-sm text-gray-600">
-                  Customer: <span className="font-medium">{order.userName}</span>
+                  Client : <span className="font-medium">{order.userName}</span>
                 </p>
                 <p className="text-sm text-gray-600">
-                  Date: {new Date(order.date).toLocaleString()}
+                  Date : {new Date(order.date).toLocaleString('fr-FR')}
                 </p>
               </div>
               <div className="flex items-center gap-4">
@@ -137,9 +142,9 @@ const Orders = ({ token }) => {
                     onChange={(e) => updateOrderStatus(order._id, e.target.value)}
                     className="border rounded px-2 py-1 text-sm"
                   >
-                    {statusOptions.filter(status => status !== "all").map(status => (
-                      <option key={status} value={status}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                    {statusOptions.filter(status => status.value !== "tous").map(status => (
+                      <option key={status.value} value={status.value}>
+                        {status.label}
                       </option>
                     ))}
                   </select>
@@ -148,7 +153,7 @@ const Orders = ({ token }) => {
             </div>
 
             <div className="mt-4">
-              <h3 className="font-medium mb-2">Order Items:</h3>
+              <h3 className="font-medium mb-2">Articles commandés :</h3>
               <div className="space-y-3">
                 {order.items.map((item) => (
                   <div
@@ -163,9 +168,9 @@ const Orders = ({ token }) => {
                     <div className="flex-1">
                       <h4 className="font-medium">{item.name}</h4>
                       <div className="text-sm text-gray-600">
-                        <p>Quantity: {item.quantity}</p>
+                        <p>Quantité : {item.quantity}</p>
                         <p>
-                          Price: {currency}
+                          Prix : {currency}
                           {item.price}
                         </p>
                       </div>
@@ -177,11 +182,11 @@ const Orders = ({ token }) => {
 
             <div className="mt-4 pt-4 border-t flex justify-between items-center">
               <div className="text-sm text-gray-600">
-                <p>Shipping Address:</p>
+                <p>Adresse de livraison :</p>
                 <p className="font-medium">{order.shippingAddress}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-600">Total Amount:</p>
+                <p className="text-sm text-gray-600">Montant total :</p>
                 <p className="text-lg font-medium">
                   {currency}
                   {order.totalAmount}
@@ -193,7 +198,7 @@ const Orders = ({ token }) => {
 
         {filteredOrders.length === 0 && (
           <div className="text-center py-8 text-gray-500">
-            No orders found for the selected status
+            Aucune commande trouvée pour le statut sélectionné
           </div>
         )}
       </div>

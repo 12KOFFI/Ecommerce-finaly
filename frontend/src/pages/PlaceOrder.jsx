@@ -50,21 +50,33 @@ const PlaceOrder = () => {
       // Vérifier si l'utilisateur est connecté
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.error("Please login to place an order");
+        toast.error("Veuillez vous connecter pour passer une commande");
         navigate("/login");
         return;
       }
 
       // Vérifier si le panier est vide
       if (Object.keys(cartItems).length === 0) {
-        toast.error("Your cart is empty");
+        toast.error("Votre panier est vide");
         return;
       }
 
       // Vérifier si tous les champs sont remplis
+      const fieldNames = {
+        firstName: 'prénom',
+        lastName: 'nom',
+        email: 'email',
+        street: 'rue',
+        city: 'ville',
+        state: 'région',
+        zipcode: 'code postal',
+        country: 'pays',
+        phone: 'téléphone'
+      };
+
       for (const [key, value] of Object.entries(formData)) {
         if (!value.trim()) {
-          toast.error(`Please fill in your ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+          toast.error(`Veuillez remplir votre ${fieldNames[key]}`);
           return;
         }
       }
@@ -101,28 +113,16 @@ const PlaceOrder = () => {
         }
       );
 
-      // La réponse est réussie seulement si le statut est 201 et success est true
-      if (response.status === 201 && response.data.success) {
-        console.log("Order created successfully:", response.data);
-        toast.success("Order placed successfully!");
-        
-        // Vérifier si clearCart existe avant de l'appeler
-        if (typeof clearCart === 'function') {
-          clearCart(); // Vider le panier après une commande réussie
-        } else {
-          console.warn("clearCart function not available");
-        }
-        
+      if (response.data.success) {
+        toast.success("Commande passée avec succès !");
+        clearCart();
         navigate("/orders");
       } else {
-        // Ne devrait pas arriver car axios lance une erreur pour les statuts non-2xx
-        console.error("Unexpected response:", response);
-        toast.error(response.data.message || "Failed to place order");
+        toast.error(response.data.message || "Échec de la création de la commande");
       }
     } catch (error) {
-      console.error("Error placing order:", error.response || error);
-      const errorMessage = error.response?.data?.message || error.message || "Failed to place order";
-      toast.error(errorMessage);
+      console.error("Erreur lors de la création de la commande:", error);
+      toast.error(error.response?.data?.message || "Échec de la création de la commande");
     } finally {
       setLoading(false);
     }
@@ -133,7 +133,7 @@ const PlaceOrder = () => {
       {/*-----------------Left Side----------------------*/}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl my-3">
-          <Title text1={"DELIVERY"} text2={"INFORMATION"} />
+          <Title text1={"INFORMATIONS"} text2={"DE LIVRAISON"} />
         </div>
 
         <div className="flex gap-3">
@@ -143,7 +143,7 @@ const PlaceOrder = () => {
             name="firstName"
             value={formData.firstName}
             onChange={handleInputChange}
-            placeholder="First name"
+            placeholder="Prénom"
           />
           <input
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
@@ -151,7 +151,7 @@ const PlaceOrder = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleInputChange}
-            placeholder="Last name"
+            placeholder="Nom"
           />
         </div>
 
@@ -161,7 +161,7 @@ const PlaceOrder = () => {
           name="email"
           value={formData.email}
           onChange={handleInputChange}
-          placeholder="Email address"
+          placeholder="Adresse email"
         />
         <input
           className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
@@ -169,7 +169,7 @@ const PlaceOrder = () => {
           name="street"
           value={formData.street}
           onChange={handleInputChange}
-          placeholder="Street"
+          placeholder="Rue"
         />
         <div className="flex gap-3">
           <input
@@ -178,7 +178,7 @@ const PlaceOrder = () => {
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            placeholder="City"
+            placeholder="Ville"
           />
           <input
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
@@ -186,7 +186,7 @@ const PlaceOrder = () => {
             name="state"
             value={formData.state}
             onChange={handleInputChange}
-            placeholder="State"
+            placeholder="Région"
           />
         </div>
         <div className="flex gap-3">
@@ -196,7 +196,7 @@ const PlaceOrder = () => {
             name="zipcode"
             value={formData.zipcode}
             onChange={handleInputChange}
-            placeholder="Zipcode"
+            placeholder="Code postal"
           />
           <input
             className="border border-gray-300 rounded py-1.5 px-3.5 w-full"
@@ -204,7 +204,7 @@ const PlaceOrder = () => {
             name="country"
             value={formData.country}
             onChange={handleInputChange}
-            placeholder="Country"
+            placeholder="Pays"
           />
         </div>
         <input
@@ -213,7 +213,7 @@ const PlaceOrder = () => {
           name="phone"
           value={formData.phone}
           onChange={handleInputChange}
-          placeholder="Phone"
+          placeholder="Téléphone"
         />
       </div>
 
@@ -224,7 +224,7 @@ const PlaceOrder = () => {
         </div>
 
         <div className="mt-12">
-          <Title text1={"PAYMENT"} text2={"METHOD"} />
+          <Title text1={"MODE DE"} text2={"PAIEMENT"} />
 
           {/*........................Payment Method Selection---------------------*/}
           <div className="flex gap-3 flex-col lg:flex-row">
@@ -237,7 +237,7 @@ const PlaceOrder = () => {
                   method === "stripe" ? "bg-green-400" : ""
                 }`}
               ></p>
-              <img className="h-5 mx-4" src={assets.stripe_logo} alt="" />
+              <img className="h-5 mx-4" src={assets.stripe_logo} alt="Stripe" />
             </div>
             <div
               onClick={() => setMethod("razorpay")}
@@ -248,7 +248,7 @@ const PlaceOrder = () => {
                   method === "razorpay" ? "bg-green-400" : ""
                 }`}
               ></p>
-              <img className="h-5 mx-4" src={assets.razorpay_logo} alt="" />
+              <img className="h-5 mx-4" src={assets.razorpay_logo} alt="Razorpay" />
             </div>
 
             <div
@@ -261,7 +261,7 @@ const PlaceOrder = () => {
                 }`}
               ></p>
               <p className="text-gray-500 text-sm font-medium mx-4">
-                CASH ON DELIVERY
+                PAIEMENT À LA LIVRAISON
               </p>
             </div>
           </div>
@@ -274,7 +274,7 @@ const PlaceOrder = () => {
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {loading ? "PLACING ORDER..." : "PLACE ORDER"}
+              {loading ? "COMMANDE EN COURS..." : "PASSER LA COMMANDE"}
             </button>
           </div>
         </div>

@@ -11,18 +11,30 @@ const ShopContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [cartItems, setCartItems] = useState({});
+  const [cartItems, setCartItems] = useState(() => {
+    // Initialiser le panier depuis le localStorage
+    const savedCart = localStorage.getItem("cartItems");
+    return savedCart ? JSON.parse(savedCart) : {};
+  });
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
+  // Sauvegarder le panier dans le localStorage à chaque modification
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   const addToCart = async (itemId) => {
     toast.success("Produit ajouté au panier avec succès");
 
-    setCartItems((prev) => ({
-      ...prev,
-      [itemId]: (prev[itemId] || 0) + 1,
-    }));
+    setCartItems((prev) => {
+      const updatedCart = {
+        ...prev,
+        [itemId]: (prev[itemId] || 0) + 1,
+      };
+      return updatedCart;
+    });
   };
 
   const getCartCount = () => {
@@ -33,17 +45,24 @@ const ShopContextProvider = (props) => {
           totalCount += cartItems[itemId];
         }
       } catch (error) {
-        console.error("Error in getCartCount:", error);
+        console.error("Erreur dans getCartCount:", error);
       }
     }
     return totalCount;
   };
 
   const updateQuantity = (itemId, quantity) => {
-    setCartItems((prev) => ({
-      ...prev,
-      [itemId]: quantity,
-    }));
+    setCartItems((prev) => {
+      const updatedCart = {
+        ...prev,
+        [itemId]: quantity,
+      };
+      // Supprimer l'article si la quantité est 0
+      if (quantity <= 0) {
+        delete updatedCart[itemId];
+      }
+      return updatedCart;
+    });
   };
 
   const getCartAmount = () => {
@@ -55,7 +74,7 @@ const ShopContextProvider = (props) => {
           totalAmount += itemInfo.price * cartItems[itemId];
         }
       } catch (error) {
-        console.error("Error in getCartAmount:", error);
+        console.error("Erreur dans getCartAmount:", error);
       }
     }
     return totalAmount;
@@ -87,6 +106,16 @@ const ShopContextProvider = (props) => {
 
   const clearCart = () => {
     setCartItems({});
+    localStorage.removeItem("cartItems"); // Nettoyer aussi le localStorage
+  };
+
+  // Fonction pour retirer un article du panier
+  const removeFromCart = (itemId) => {
+    setCartItems((prev) => {
+      const updatedCart = { ...prev };
+      delete updatedCart[itemId];
+      return updatedCart;
+    });
   };
 
   const value = {
@@ -107,6 +136,7 @@ const ShopContextProvider = (props) => {
     token,
     setToken,
     clearCart,
+    removeFromCart,
   };
 
   return (
