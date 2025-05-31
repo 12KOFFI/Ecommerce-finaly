@@ -10,14 +10,14 @@ const ShopContextProvider = (props) => {
   const delivery_fee = 10;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [search, setSearch] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState(() => {
     // Initialiser le panier depuis le localStorage
     const savedCart = localStorage.getItem("cartItems");
     return savedCart ? JSON.parse(savedCart) : {};
   });
   const [products, setProducts] = useState([]);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const navigate = useNavigate();
 
   // Sauvegarder le panier dans le localStorage à chaque modification
@@ -124,9 +124,8 @@ const ShopContextProvider = (props) => {
     delivery_fee,
     search,
     setSearch,
-    showSearch,
-    setShowSearch,
     cartItems,
+    setCartItems,
     addToCart,
     getCartCount,
     updateQuantity,
@@ -137,6 +136,8 @@ const ShopContextProvider = (props) => {
     setToken,
     clearCart,
     removeFromCart,
+    selectedCategory,
+    setSelectedCategory,
   };
 
   return (

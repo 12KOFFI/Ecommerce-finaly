@@ -1,22 +1,37 @@
 import React, { useContext, useState, useEffect } from "react";
 import { assets } from "../assets/assets";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [showCategories, setShowCategories] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
-    setShowSearch,
     getCartCount,
-    navigate,
     token,
     setToken,
     setCartItems,
-    backendUrl
+    backendUrl,
+    setSelectedCategory,
+    search,
+    setSearch
   } = useContext(ShopContext);
+
+  const categories = [
+    { value: "Écouteurs", label: "Écouteurs" },
+    { value: "Casques", label: "Casques" },
+    { value: "Montres Connectées", label: "Montres Connectées" },
+    { value: "Smartphones", label: "Smartphones" },
+    { value: "Ordinateurs", label: "Ordinateurs" },
+    { value: "Tablettes", label: "Tablettes" },
+    { value: "Caméras", label: "Caméras" },
+    { value: "Jeux vidéos & Consoles", label: "Jeux vidéos & Consoles" }
+  ];
 
   useEffect(() => {
     if (token) {
@@ -57,144 +72,174 @@ const Navbar = () => {
     setUserData(null);
   };
 
+  const handleCategoryClick = (categoryValue) => {
+    setShowCategories(false);
+    setSelectedCategory(categoryValue);
+    navigate('/collection');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (location.pathname !== '/collection') {
+      navigate('/collection');
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between py-5 font-medium relative">
-      <Link to="/">
-        {" "}
-        <img src={assets.logo} className="w-36" alt="Logo" />
-      </Link>
-      <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
-        <NavLink to="/" className=" flex flex-col items-center gap-1">
-          <p>HOME</p>
-          <hr className="w-2/3 border-none h-[1.6px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/collection" className=" flex flex-col items-center gap-1">
-          <p>COLLECTION</p>
-          <hr className="w-2/3 border-none h-[1.6px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/about" className=" flex flex-col items-center gap-1">
-          <p>ABOUT</p>
-          <hr className="w-2/3 border-none h-[1.6px] bg-gray-700 hidden" />
-        </NavLink>
-
-        <NavLink to="/contact" className=" flex flex-col items-center gap-1">
-          <p>CONTACT</p>
-          <hr className="w-2/3 border-none h-[1.6px] bg-gray-700 hidden" />
-        </NavLink>
-      </ul>
-
-      <div className="flex items-center gap-5">
-        <img
-          onClick={() => setShowSearch(true)}
-          src={assets.search_icon}
-          className="w-5 cursor-pointer"
-          alt="Search"
-        />
-
-        <div className="group relative">
-          <img
-            onClick={() => (token ? null : navigate("/login"))}
-            src={assets.profile_icon}
-            className="w-5 cursor-pointer"
-            alt="Profile"
-          />
-
-          {/* Dropdown menu for profile */}
-          {token && (
-            <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4 z-50">
-              <div className="w-64 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
-                {/* En-tête avec info utilisateur */}
-                <div className="px-6 py-4 bg-gray-50 border-b border-gray-100">
-                  <p className="font-medium text-gray-800">
-                    {userData?.name || 'Chargement...'}
-                  </p>
-                  <p className="text-sm text-gray-500 truncate">
-                    {userData?.email || ''}
-                  </p>
-                </div>
-
-                {/* Menu items */}
-                <div className="py-2">
-                  <Link 
-                    to="/my-profile" 
-                    className="flex items-center px-6 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
-                  >
-                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Mon profil
-                  </Link>
-
-                  <Link 
-                    to="/orders" 
-                    className="flex items-center px-6 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
-                  >
-                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    Commandes
-                  </Link>
-
-                  <hr className="my-2 border-gray-100" />
-
-                  <button
-                    onClick={logout}
-                    className="flex items-center w-full px-6 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
-                  >
-                    <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Déconnexion
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+    <>
+      <div className="flex items-center justify-between py-4 font-medium relative border-b">
+        <Link to="/">
+          <img src={assets.logo} className="w-36" alt="Logo" />
+        </Link>
+        
+        {/* Search bar */}
+        <div className="hidden md:flex items-center flex-1 max-w-2xl mx-8">
+          <form onSubmit={handleSearch} className="relative w-full">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher des produits, marques et catégories..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+            />
+            <button 
+              type="submit"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            >
+              <img
+                src={assets.search_icon}
+                className="w-5"
+                alt="Search"
+              />
+            </button>
+          </form>
         </div>
 
-        {/*  panier*/}
-        <Link to="/cart" className="relative">
-          <img
-            src={assets.cart_icon}
-            className="w-5 min-w-5 cursor-pointer"
-            alt="Cart"
-          />
-          <p className="absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-neutral-950 text-white aspect-square rounded-full text-[8px]">
-            {getCartCount()}
-          </p>
-        </Link>
+        <div className="flex items-center gap-6">
+          {/* Account dropdown */}
+          <div className="hidden md:block group relative">
+            <button className="flex items-center gap-2 hover:text-orange-600 transition-colors">
+              <img src={assets.profile_icon} className="w-5" alt="Profile" />
+              <span>{token ? (userData?.name || "Account") : "Account"}</span>
+            </button>
 
-        {/* Bouton menu mobile */}
-        <button
-          onClick={() => setVisible(true)}
-          className="sm:hidden p-1 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <img
-            src={assets.menu_icon}
-            className="w-5 cursor-pointer"
-            alt="Menu"
-          />
-        </button>
+            <div className="invisible group-hover:visible absolute right-0 pt-4 z-50 w-64 opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <div className="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
+                {token ? (
+                  <>
+                    <div className="px-6 py-4 bg-gray-50 border-b">
+                      <p className="font-medium text-gray-800">{userData?.name}</p>
+                      <p className="text-sm text-gray-500 truncate">{userData?.email}</p>
+                    </div>
+                    <div className="py-2">
+                      <Link to="/my-profile" className="flex items-center px-6 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                        <span>My Profile</span>
+                      </Link>
+                      <Link to="/orders" className="flex items-center px-6 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                        <span>My Orders</span>
+                      </Link>
+                      <button onClick={logout} className="w-full text-left px-6 py-2 text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-4 px-6">
+                    <Link to="/login" className="block w-full py-2 px-4 text-center bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">
+                      Login
+                    </Link>
+                    <p className="text-sm text-gray-500 text-center mt-2">
+                      New customer?{" "}
+                      <Link to="/login" className="text-orange-600 hover:underline">
+                        Create account
+                      </Link>
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Cart */}
+          <Link to="/cart" className="relative hover:text-orange-600 transition-colors">
+            <img src={assets.cart_icon} className="w-5 min-w-5" alt="Cart" />
+            <span className="absolute -right-2 -bottom-2 w-5 h-5 flex items-center justify-center bg-orange-600 text-white text-xs rounded-full">
+              {getCartCount()}
+            </span>
+          </Link>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setVisible(true)}
+            className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <img src={assets.menu_icon} className="w-5" alt="Menu" />
+          </button>
+        </div>
       </div>
 
-      {/* Menu mobile overlay */}
+      {/* Categories bar */}
+      <div className="hidden md:block border-b bg-white">
+        <div className="flex items-center justify-center gap-8 py-3">
+          <button
+            className="flex items-center gap-2 hover:text-orange-600 transition-colors"
+            onClick={() => setShowCategories(!showCategories)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span>All Categories</span>
+          </button>
+
+          <nav className="hidden md:flex gap-6">
+            <NavLink to="/" className="hover:text-orange-600 transition-colors">
+              HOME
+            </NavLink>
+            <NavLink to="/collection" className="hover:text-orange-600 transition-colors">
+              COLLECTION
+            </NavLink>
+            <NavLink to="/help" className="hover:text-orange-600 transition-colors">
+              AIDE
+            </NavLink>
+           
+          </nav>
+        </div>
+
+        {/* Categories dropdown */}
+        {showCategories && (
+          <div className="absolute left-0 right-0 bg-white border-b shadow-lg z-50">
+            <div className="grid grid-cols-4 gap-6 p-6 max-w-7xl mx-auto">
+              {categories.map((category) => (
+                <button 
+                  key={category.value}
+                  onClick={() => handleCategoryClick(category.value)}
+                  className="p-4 text-center rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-all duration-300"
+                >
+                  <h3 className="font-medium text-gray-900 hover:text-orange-600 transition-colors">
+                    {category.label}
+                  </h3>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile menu overlay */}
       {visible && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={() => setVisible(false)}
         />
       )}
 
-      {/* Menu mobile */}
+      {/* Mobile menu */}
       <div
         className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white z-50 transform transition-transform duration-300 ease-in-out ${
           visible ? 'translate-x-0' : 'translate-x-full'
-        } sm:hidden`}
+        }`}
       >
         <div className="flex flex-col h-full">
-          {/* En-tête du menu */}
           <div className="flex items-center justify-between p-4 border-b">
             <h2 className="text-lg font-semibold">Menu</h2>
             <button
@@ -207,129 +252,102 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto">
-            <div className="py-2">
-              {token && (
-                <div className="px-4 py-3 bg-gray-50">
-                  <p className="text-sm font-medium text-gray-900">{userData?.name}</p>
-                  <p className="text-xs text-gray-500">{userData?.email}</p>
-                </div>
-              )}
-
-              <div className="px-2 py-3 space-y-1">
-                <NavLink
-                  to="/"
-                  onClick={() => setVisible(false)}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 rounded-lg transition-colors ${
-                      isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  Accueil
-                </NavLink>
-
-                <NavLink
-                  to="/collection"
-                  onClick={() => setVisible(false)}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 rounded-lg transition-colors ${
-                      isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  Collection
-                </NavLink>
-
-                <NavLink
-                  to="/about"
-                  onClick={() => setVisible(false)}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 rounded-lg transition-colors ${
-                      isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  À propos
-                </NavLink>
-
-                <NavLink
-                  to="/contact"
-                  onClick={() => setVisible(false)}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 rounded-lg transition-colors ${
-                      isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
-                    }`
-                  }
-                >
-                  Contact
-                </NavLink>
+          <div className="flex-1 overflow-y-auto">
+            {token && (
+              <div className="px-4 py-3 bg-gray-50 border-b">
+                <p className="font-medium text-gray-900">{userData?.name}</p>
+                <p className="text-sm text-gray-500">{userData?.email}</p>
               </div>
+            )}
 
-              {token && (
-                <>
-                  <hr className="my-2" />
-                  <div className="px-2 py-3 space-y-1">
-                    <NavLink
-                      to="/my-profile"
-                      onClick={() => setVisible(false)}
-                      className="flex items-center px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                      Mon profil
-                    </NavLink>
+            <nav className="p-4 space-y-1">
+              <NavLink
+                to="/"
+                onClick={() => setVisible(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-lg transition-colors ${
+                    isActive ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`
+                }
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/collection"
+                onClick={() => setVisible(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-lg transition-colors ${
+                    isActive ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`
+                }
+              >
+                Collection
+              </NavLink>
+              <NavLink
+                to="/about"
+                onClick={() => setVisible(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-lg transition-colors ${
+                    isActive ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`
+                }
+              >
+                About
+              </NavLink>
+              <NavLink
+                to="/contact"
+                onClick={() => setVisible(false)}
+                className={({ isActive }) =>
+                  `block px-4 py-2 rounded-lg transition-colors ${
+                    isActive ? 'bg-orange-50 text-orange-600' : 'text-gray-600 hover:bg-gray-50'
+                  }`
+                }
+              >
+                Contact
+              </NavLink>
+            </nav>
 
-                    <NavLink
-                      to="/orders"
-                      onClick={() => setVisible(false)}
-                      className="flex items-center px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                      </svg>
-                      Mes commandes
-                    </NavLink>
-                  </div>
-                </>
+            <div className="p-4 border-t">
+              {token ? (
+                <div className="space-y-1">
+                  <Link
+                    to="/my-profile"
+                    onClick={() => setVisible(false)}
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    My Profile
+                  </Link>
+                  <Link
+                    to="/orders"
+                    onClick={() => setVisible(false)}
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    My Orders
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setVisible(false);
+                    }}
+                    className="block w-full px-4 py-2 text-left text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setVisible(false)}
+                  className="block w-full py-2 text-center bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+                >
+                  Login
+                </Link>
               )}
             </div>
-          </nav>
-
-          {/* Footer du menu */}
-          {token ? (
-            <div className="border-t p-4">
-              <button
-                onClick={() => {
-                  logout();
-                  setVisible(false);
-                }}
-                className="flex items-center w-full px-3 py-2 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Déconnexion
-              </button>
-            </div>
-          ) : (
-            <div className="border-t p-4">
-              <button
-                onClick={() => {
-                  navigate("/login");
-                  setVisible(false);
-                }}
-                className="w-full px-4 py-2 text-white bg-gray-900 rounded-lg hover:bg-gray-800 transition-colors"
-              >
-                Se connecter
-              </button>
-            </div>
-          )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
