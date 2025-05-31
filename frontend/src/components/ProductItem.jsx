@@ -51,8 +51,12 @@ const ProductItem = ({ id, image, name, price }) => {
       <div className="relative overflow-hidden aspect-square rounded-t-lg">
         <img
           className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
-          src={image}
+          src={Array.isArray(image) ? image[0] : image}
           alt={name}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://via.placeholder.com/300x300?text=Image+non+disponible';
+          }}
         />
         
         {/* Overlay sur hover */}

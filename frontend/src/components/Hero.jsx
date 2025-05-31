@@ -51,7 +51,7 @@ const Hero = () => {
           transform: `translateX(-${currentSlide * 100}%)`,
         }}
       >
-        {sliderData.map((slide, index) => (
+        {sliderData.map((slide) => (
           <div
             key={slide.id}
             className="flex flex-col-reverse md:flex-row items-center justify-between bg-[#E6E9F2] py-8 md:px-14 px-5 mt-6 rounded-xl min-w-full"
@@ -77,9 +77,13 @@ const Hero = () => {
             </div>
             <div className="flex items-center flex-1 justify-center">
               <img
-                className="md:w-72 w-48"
+                className="md:w-72 w-48 object-contain"
                 src={slide.imgSrc}
-                alt={`Slide ${index + 1}`}
+                alt={slide.title}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = 'https://via.placeholder.com/300x300?text=Image+non+disponible';
+                }}
               />
             </div>
           </div>

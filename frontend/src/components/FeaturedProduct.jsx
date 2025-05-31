@@ -36,7 +36,11 @@ const FeaturedProduct = () => {
             <img
               src={image}
               alt={title}
-              className="group-hover:brightness-75 transition duration-300 w-full h-auto object-cover"
+              className="group-hover:brightness-75 transition duration-300 w-full h-[400px] object-cover rounded-lg"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/400x400?text=Image+non+disponible';
+              }}
             />
             <div className="group-hover:-translate-y-4 transition duration-300 absolute bottom-8 left-8 text-white space-y-2">
               <p className="font-medium text-xl lg:text-2xl">{title}</p>
