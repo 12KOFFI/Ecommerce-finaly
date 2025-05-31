@@ -6,6 +6,7 @@ import {
   addProduct,
   removeProduct,
   singleProduct,
+  updateProduct,
 } from "../controllers/productController.js";
 
 
@@ -25,5 +26,7 @@ productRouter.post(
 productRouter.post("/remove",adminAuth, removeProduct);
 productRouter.post("/single", singleProduct);
 productRouter.get("/list", listProducts);
+productRouter.get("/:id", singleProduct);
+productRouter.put("/update/:id", adminAuth, updateProduct);
 
 export default productRouter;

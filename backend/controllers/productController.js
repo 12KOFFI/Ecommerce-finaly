@@ -97,8 +97,14 @@ const removeProduct = async (req, res) => {
 
 const singleProduct = async (req, res) => {
   try {
-    const { productId } = req.body;
+    // L'ID peut venir soit des paramètres d'URL (GET) soit du corps de la requête (POST)
+    const productId = req.params.id || req.body.productId;
     const product = await productModel.findById(productId);
+    
+    if (!product) {
+      return res.json({ success: false, message: "Produit non trouvé" });
+    }
+    
     res.json({ success: true, product });
   } catch (error) {
     console.log(error);
@@ -106,4 +112,26 @@ const singleProduct = async (req, res) => {
   }
 };
 
-export { listProducts, addProduct, removeProduct, singleProduct };
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const product = await productModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.json({ success: false, message: "Produit non trouvé" });
+    }
+
+    res.json({ success: true, message: "Produit mis à jour avec succès", product });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export { listProducts, addProduct, removeProduct, singleProduct, updateProduct };
