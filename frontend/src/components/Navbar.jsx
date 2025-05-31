@@ -89,7 +89,8 @@ const Navbar = () => {
     <>
       <div className="flex items-center justify-between py-4 font-medium relative border-b">
         <Link to="/">
-          <img src={assets.logo} className="w-36" alt="Logo" />
+          <span className="text-2xl font-bold text-orange-600">TechMarket</span>
+          <hr className="w-full h-1 bg-orange-600" />
         </Link>
         
         {/* Search bar */}

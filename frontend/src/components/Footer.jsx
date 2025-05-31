@@ -1,5 +1,4 @@
 import React from "react";
-import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -10,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b">
           {/* À propos */}
           <div className="space-y-6">
-            <img src={assets.logo} alt="Logo" className="w-32" />
+            <span className="text-2xl font-bold text-orange-600">TechMarket</span>
             <p className="text-gray-600 text-sm">
               Votre destination pour les meilleurs produits électroniques. Qualité garantie et service client exceptionnel.
             </p>
