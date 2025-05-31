@@ -5,7 +5,8 @@ import {
   createOrder,
   updateOrderStatus,
   deletePendingOrder,
-  deleteOrder
+  deleteOrder,
+  updateShippingAddress
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import userAuth from "../middleware/userAuth.js";
@@ -21,5 +22,6 @@ orderRouter.delete("/:orderId", adminAuth, deleteOrder);
 orderRouter.get("/user", userAuth, getUserOrders);
 orderRouter.post("/create", userAuth, createOrder);
 orderRouter.delete("/:orderId", userAuth, deletePendingOrder);
+orderRouter.put("/address", userAuth, updateShippingAddress);
 
 export default orderRouter; 

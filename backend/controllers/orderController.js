@@ -55,6 +55,37 @@ export const createOrder = async (req, res) => {
   }
 };
 
+// Update shipping address (user can only update their own orders)
+export const updateShippingAddress = async (req, res) => {
+  try {
+    const { orderId, shippingAddress } = req.body;
+    const userId = req.userId;
+
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Commande non trouvée" });
+    }
+
+    // Vérifier si l'ordre appartient à l'utilisateur
+    if (order.userId.toString() !== userId) {
+      return res.status(403).json({ success: false, message: "Vous n'êtes pas autorisé à modifier cette commande" });
+    }
+
+    // Vérifier si la commande peut être modifiée
+    if (['shipped', 'delivered'].includes(order.status.toLowerCase())) {
+      return res.status(400).json({ success: false, message: "Impossible de modifier une commande déjà expédiée ou livrée" });
+    }
+
+    order.shippingAddress = shippingAddress;
+    await order.save();
+
+    return res.json({ success: true, message: "Adresse de livraison mise à jour avec succès" });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'adresse:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Update order status (admin only)
 export const updateOrderStatus = async (req, res) => {
   try {
