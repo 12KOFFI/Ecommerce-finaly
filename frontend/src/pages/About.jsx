@@ -5,71 +5,88 @@ import NewsletterBox from "../components/NewsletterBox";
 
 const About = () => {
   return (
-    <div>
-      <div className="text-2xl text-center pt-8 border-t">
-        <Title text1={"ABOUT"} text2={"US"} />
+    <div className="bg-white">
+      <div className="text-2xl text-center pt-12 border-t">
+        <Title text1={"À PROPOS"} text2={"DE NOUS"} />
       </div>
 
-      <div className="my-10 flex flex-col  md:flex-row gap-16">
-        <img
-          className="w-full md:max-w-[450px]"
-          src={assets.about_img}
-          alt=""
-        />
-        <div className="flex flex-col justify-center gap-6 md:w-2/4 text-gray-600">
-          <p>
-            Forever was born out of a passion for innovation and a desire to
-            revolutionize the way people shop online. Our journey began with a
-            simple idea: to provide a platform where customers can easily
-            discover, explore, and purchase a wide range of products from the
-            comfort of their homes.
-          </p>
-          <p>
-            Since our inception, we've worked tirelessly to curate a diverse
-            selection of high-quality products that cater to every taste and
-            preference. From fashion and beauty to electronics and home
-            essentials, we offer an extensive collection sourced from trusted
-            brands and suppliers.
-          </p>
-          <b className="text-gray-800">Our-Mission</b>
-          <p>
-            Our mission at Forever is to empower customers with choice,
-            convenience, and confidence. We're dedicated to providing a seamless
-            shopping experience that exceeds expectations, from browsing and
-            ordering to delivery and beyond.
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="my-16 flex flex-col md:flex-row gap-16 items-center">
+          <div className="w-full md:w-1/2">
+            <img
+              className="w-full h-[500px] object-cover rounded-lg shadow-xl"
+              src={assets.about_img}
+              alt="À propos de notre entreprise"
+            />
+          </div>
+          <div className="flex flex-col justify-center gap-8 md:w-1/2">
+            <p className="text-lg leading-relaxed text-gray-700">
+              Forever est né d'une passion pour l'innovation et d'un désir de révolutionner 
+              la façon dont les gens font leurs achats en ligne. Notre aventure a commencé 
+              avec une idée simple : offrir une plateforme où les clients peuvent facilement 
+              découvrir, explorer et acheter une large gamme de produits depuis le confort 
+              de leur domicile.
+            </p>
+            <p className="text-lg leading-relaxed text-gray-700">
+              Depuis notre création, nous travaillons sans relâche pour proposer une sélection 
+              diversifiée de produits de haute qualité qui répondent à tous les goûts et 
+              préférences. De la mode aux appareils électroniques, en passant par les 
+              essentiels du quotidien, nous offrons une collection extensive provenant de 
+              marques et fournisseurs de confiance.
+            </p>
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Notre Mission</h3>
+              <p className="text-lg leading-relaxed text-gray-700">
+                Notre mission chez Forever est d'offrir aux clients le choix, la commodité 
+                et la confiance. Nous nous engageons à fournir une expérience d'achat 
+                fluide qui dépasse les attentes, de la navigation à la livraison.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-2xl py-12">
+          <Title text1={"POURQUOI"} text2={"NOUS CHOISIR"} />
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 mb-20">
+          <div className="bg-white rounded-xl shadow-sm p-8 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl font-semibold text-gray-900">Assurance Qualité</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Nous sélectionnons et vérifions méticuleusement chaque produit pour 
+                garantir qu'il répond à nos normes de qualité strictes.
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm p-8 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl font-semibold text-gray-900">Simplicité</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Avec notre interface conviviale et notre processus de commande simplifié, 
+                faire ses achats n'a jamais été aussi facile.
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-xl shadow-sm p-8 hover:shadow-lg transition-shadow duration-300">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl font-semibold text-gray-900">Service Client Exceptionnel</h3>
+              <p className="text-gray-700 leading-relaxed">
+                Notre équipe de professionnels dévoués est là pour vous accompagner, 
+                faisant de votre satisfaction notre priorité absolue.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="text-2xl py-4">
-        <Title text1={"WHY"} text2={"CHOOSE US"} />
-      </div>
-
-      <div className="flex flex-col md:flex-row text-sm mb-20">
-        <div className="border px-10 md:px-16 py-8  sm:py-20 flex flex-col gap-5">
-          <b>Quality Assurance:</b>
-          <p className="text-gray-600">
-            We meticulously select and vet each product to ensure it meets our
-            stringent quality standards.
-          </p>
-        </div>
-        <div className="border px-10 md:px-16 py-8  sm:py-20 flex flex-col gap-5">
-          <b>Convenience:</b>
-          <p className="text-gray-600">
-            With our user-friendly interface and hassle-free ordering process,
-            shopping has never been easier..
-          </p>
-        </div>
-        <div className="border px-10 md:px-16 py-8  sm:py-20 flex flex-col gap-5">
-          <b>Exceptional Customer Service:</b>
-          <p className="text-gray-600">
-            Our team of dedicated professionals is here to assist you the way,
-            ensuring your satisfaction is our top priority.
-          </p>
+      <div className="bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <NewsletterBox />
         </div>
       </div>
-
-      <NewsletterBox />
     </div>
   );
 };

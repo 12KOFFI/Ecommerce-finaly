@@ -12,6 +12,11 @@ const orderSchema = new mongoose.Schema({
   }],
   totalAmount: { type: Number, required: true },
   shippingAddress: { type: String, required: true },
+  paymentMethod: {
+    type: String,
+    enum: ['paypal', 'wave', 'cod'],
+    required: true
+  },
   status: {
     type: String,
     enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],

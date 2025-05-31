@@ -147,9 +147,9 @@ const Add = ({ token }) => {
         <div>
           <p className="mb-2">Catégorie</p>
           <select
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             onChange={(e) => setCategory(e.target.value)}
             value={category}
-            className="w-full px-3 py-2"
           >
             <option value="Écouteurs">Écouteurs</option>
             <option value="Casques">Casques</option>
@@ -158,7 +158,7 @@ const Add = ({ token }) => {
             <option value="Ordinateurs">Ordinateurs</option>
             <option value="Tablettes">Tablettes</option>
             <option value="Caméras">Caméras</option>
-            <option value="Accessoires">Accessoires</option>
+            <option value="Jeux vidéos & Consoles">Jeux vidéos & Consoles</option>
           </select>
         </div>
 

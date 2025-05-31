@@ -20,7 +20,7 @@ const Collection = () => {
     { value: "Ordinateurs", label: "Ordinateurs" },
     { value: "Tablettes", label: "Tablettes" },
     { value: "Caméras", label: "Caméras" },
-    { value: "Accessoires", label: "Accessoires" }
+    { value: "Jeux vidéos & Consoles", label: "Jeux vidéos & Consoles" }
   ];
 
   const subCategories = [

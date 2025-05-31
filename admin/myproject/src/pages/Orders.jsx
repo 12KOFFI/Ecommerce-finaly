@@ -84,6 +84,15 @@ const Orders = ({ token }) => {
     return status ? status.label : statusValue;
   };
 
+  const getPaymentMethodLabel = (method) => {
+    const paymentMethods = {
+      'paypal': 'PayPal',
+      'wave': 'Wave',
+      'cod': 'Paiement à la livraison'
+    };
+    return paymentMethods[method] || method;
+  };
+
   const filteredOrders = selectedStatus === "tous"
     ? orders
     : orders.filter(order => order.status.toLowerCase() === selectedStatus);
@@ -132,6 +141,9 @@ const Orders = ({ token }) => {
                 </p>
                 <p className="text-sm text-gray-600">
                   Date : {new Date(order.date).toLocaleString('fr-FR')}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Mode de paiement : <span className="font-medium">{getPaymentMethodLabel(order.paymentMethod)}</span>
                 </p>
                 <p className="text-sm text-gray-600">
                   Statut actuel : <span className="font-medium">{getStatusLabel(order.status)}</span>

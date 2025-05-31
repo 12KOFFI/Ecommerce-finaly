@@ -27,7 +27,7 @@ export const getUserOrders = async (req, res) => {
 // Create new order
 export const createOrder = async (req, res) => {
   try {
-    const { items, totalAmount, shippingAddress } = req.body;
+    const { items, totalAmount, shippingAddress, paymentMethod } = req.body;
     const userId = req.userId;
 
     // Get user name
@@ -42,6 +42,7 @@ export const createOrder = async (req, res) => {
       items,
       totalAmount,
       shippingAddress,
+      paymentMethod,
       status: 'pending',
       date: new Date()
     });

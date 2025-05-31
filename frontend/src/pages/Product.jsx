@@ -57,106 +57,150 @@ const Product = () => {
   if (!productData) return <div className="opacity-0"></div>;
 
   return (
-    <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Product Data */}
-      <div className="flex gap-12 sm:gap-12 flex-col sm:flex-row">
+      <div className="flex flex-col lg:flex-row gap-12">
         {/* Product Images */}
-        <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full scrollbar-hide">
+        <div className="flex-1 flex flex-col-reverse lg:flex-row gap-6">
+          {/* Thumbnails */}
+          <div className="flex lg:flex-col overflow-x-auto lg:overflow-y-auto gap-4 lg:w-24 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             {productData.image.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
                 src={item}
                 key={index}
-                className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
-                alt={productData.name}
+                className={`w-20 h-20 object-cover rounded-lg cursor-pointer transition-all duration-200 ${
+                  image === item ? 'ring-2 ring-blue-500' : 'hover:opacity-80'
+                }`}
+                alt={`${productData.name} - vue ${index + 1}`}
               />
             ))}
           </div>
-          <div className="w-full sm:w-[80%]">
-            <img className="w-full h-auto" src={image} alt={productData.name} />
+          {/* Main Image */}
+          <div className="flex-1">
+            <div className="aspect-w-1 aspect-h-1 rounded-2xl overflow-hidden bg-gray-100">
+              <img 
+                className="w-full h-full object-cover object-center" 
+                src={image} 
+                alt={productData.name}
+              />
+            </div>
           </div>
         </div>
 
         {/* Product Info */}
-        <div className="flex-1">
-          <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
-          <div className="flex items-center gap-1 mt-2">
-            <img src={assets.star_icon} alt="star" className="w-3 5" />
-            <img src={assets.star_icon} alt="star" className="w-3 5" />
-            <img src={assets.star_icon} alt="star" className="w-3 5" />
-            <img src={assets.star_icon} alt="star" className="w-3 5" />
-            <img src={assets.star_dull_icon} alt="star" className="w-3 5" />
-            <p className="pl-2">(122)</p>
+        <div className="flex-1 flex flex-col">
+          <div className="pb-6 border-b border-gray-200">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{productData.name}</h1>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex">
+                {[...Array(4)].map((_, i) => (
+                  <img key={i} src={assets.star_icon} alt="star" className="w-5 h-5" />
+                ))}
+                <img src={assets.star_dull_icon} alt="star" className="w-5 h-5" />
+              </div>
+              <p className="text-sm text-gray-500">(122 avis)</p>
+            </div>
+            <p className="text-4xl font-bold text-gray-900">
+              {currency}{productData.price}
+            </p>
           </div>
 
-          {/* Brand and Color */}
-          <p className="mt-2 text-gray-700">
-            <strong>Marque :</strong> {productData.brand}
-          </p>
-          <p className="mt-1 text-gray-700">
-            <strong>Couleur :</strong> {productData.color}
-          </p>
-
-          <p className="mt-5 text-3xl font-medium">
-            {currency}
-            {productData.price}
-          </p>
-          <p className="mt-5 text-gray-500 md:w-4/5">{productData.description}</p>
-
-          <div className="flex flex-col sm:flex-row items-center sm:justify-start">
-            <button
-              onClick={() => {
-                const token = localStorage.getItem("token");
-                if (!token) {
-                  toast.error("Veuillez vous connecter pour ajouter au panier");
-                  navigate("/login");
-                  return;
-                }
-                addToCart(productData._id);
-                toast.success("Produit ajouté au panier");
-              }}
-              className="bg-white border border-black text-black px-5 py-3 text-sm active:bg-gray-700 rounded-2xl mb-3 sm:mb-0 w-45"
-            >
-              AJOUTER AU PANIER
-            </button>
-            <button
-              onClick={handleBuyNow}
-              disabled={loading}
-              className={`bg-black text-white px-5 py-3 text-sm active:bg-gray-700 sm:ml-4 rounded-2xl w-45 ${
-                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
-              }`}
-            >
-              {loading ? "TRAITEMENT..." : "ACHETER MAINTENANT"}
-            </button>
+          <div className="py-6 space-y-4 border-b border-gray-200">
+            <div className="flex items-center">
+              <span className="w-24 text-sm text-gray-500">Marque</span>
+              <span className="text-sm font-medium text-gray-900">{productData.brand}</span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-24 text-sm text-gray-500">Couleur</span>
+              <span className="text-sm font-medium text-gray-900">{productData.color}</span>
+            </div>
           </div>
 
-          <hr className="mt-8 sm:w-4/5" />
-          <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
-            <p>Produit 100% authentique.</p>
-            <p>Paiement à la livraison disponible.</p>
-            <p>Retour et échange faciles sous 7 jours.</p>
+          <div className="py-6 border-b border-gray-200">
+            <p className="text-base text-gray-600 leading-relaxed">
+              {productData.description}
+            </p>
+          </div>
+
+          <div className="py-6 space-y-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={() => {
+                  const token = localStorage.getItem("token");
+                  if (!token) {
+                    toast.error("Veuillez vous connecter pour ajouter au panier");
+                    navigate("/login");
+                    return;
+                  }
+                  addToCart(productData._id);
+                }}
+                className="flex-1 bg-white border-2 border-gray-900 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200"
+              >
+                Ajouter au panier
+              </button>
+              <button
+                onClick={handleBuyNow}
+                disabled={loading}
+                className={`flex-1 bg-gray-900 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 ${
+                  loading 
+                    ? "opacity-50 cursor-not-allowed" 
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                {loading ? "Traitement..." : "Acheter maintenant"}
+              </button>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p>Produit 100% authentique</p>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p>Paiement à la livraison disponible</p>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-gray-600">
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                </svg>
+                <p>Retour et échange faciles sous 7 jours</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Description & Review Section */}
-      <div className="mt-20">
-        <div className="flex">
-          <b className="border px-5 text-sm py-3">Description</b>
-          <p className="border px-5 py-3 text-sm">Avis (122)</p>
+      <div className="mt-16">
+        <div className="border-b border-gray-200">
+          <nav className="flex gap-8">
+            <button className="border-b-2 border-gray-900 py-4 text-sm font-medium text-gray-900">
+              Description
+            </button>
+            <button className="py-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+              Avis (122)
+            </button>
+          </nav>
         </div>
 
-        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500">
+        <div className="py-8 prose prose-sm max-w-none text-gray-600">
           <p>{productData.description}</p>
         </div>
       </div>
 
       {/* Related Products Section */}
-      <RelatedProducts
-        category={productData.category}
-        subCategory={productData.subCategory}
-      />
+      <div className="mt-16 border-t border-gray-200 pt-16">
+        <RelatedProducts
+          category={productData.category}
+          subCategory={productData.subCategory}
+        />
+      </div>
     </div>
   );
 };
