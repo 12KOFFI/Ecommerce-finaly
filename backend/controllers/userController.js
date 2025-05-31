@@ -74,7 +74,7 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
 
-    //  création d’un nouvel utilisateur
+    //  création d'un nouvel utilisateur
     const newUser = new userModel({
       name,
       email,
@@ -115,4 +115,74 @@ const adminlogin = async (req, res) => {
   }
 };
 
-export { loginUser, registerUser, adminlogin };
+// Get user profile
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.userId).select('-password -cartData');
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utilisateur non trouvé"
+      });
+    }
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la récupération du profil"
+    });
+  }
+};
+
+// Update user profile
+const updateUserProfile = async (req, res) => {
+  try {
+    const { name, email, phone, address } = req.body;
+    
+    // Vérifier si l'email est déjà utilisé par un autre utilisateur
+    if (email) {
+      const existingUser = await userModel.findOne({ email, _id: { $ne: req.userId } });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "Cet email est déjà utilisé"
+        });
+      }
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.userId,
+      {
+        name,
+        email,
+        phone,
+        address
+      },
+      { new: true }
+    ).select('-password -cartData');
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Utilisateur non trouvé"
+      });
+    }
+
+    res.json({
+      success: true,
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors de la mise à jour du profil"
+    });
+  }
+};
+
+export { loginUser, registerUser, adminlogin, getUserProfile, updateUserProfile };
