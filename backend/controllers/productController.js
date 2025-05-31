@@ -34,11 +34,11 @@ const addProduct = async (req, res) => {
       images.map(async (item) => {
         try {
           console.log("Tentative d'upload de l'image:", item.path);
-          let result = await cloudinary.uploader.upload(item.path, {
-            resource_type: "image",
-          });
+        let result = await cloudinary.uploader.upload(item.path, {
+          resource_type: "image",
+        });
           console.log("Upload réussi:", result.secure_url);
-          return result.secure_url;
+        return result.secure_url;
         } catch (error) {
           console.error("Erreur lors de l'upload sur Cloudinary:", error);
           throw error;

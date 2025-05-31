@@ -4,7 +4,8 @@ import {
   getUserOrders,
   createOrder,
   updateOrderStatus,
-  deletePendingOrder
+  deletePendingOrder,
+  deleteOrder
 } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import userAuth from "../middleware/userAuth.js";
@@ -14,6 +15,7 @@ const orderRouter = express.Router();
 // Routes admin
 orderRouter.get("/all", adminAuth, getAllOrders);
 orderRouter.put("/status", adminAuth, updateOrderStatus);
+orderRouter.delete("/:orderId", adminAuth, deleteOrder);
 
 // Routes utilisateur
 orderRouter.get("/user", userAuth, getUserOrders);

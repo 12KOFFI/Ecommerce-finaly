@@ -103,4 +103,22 @@ export const deletePendingOrder = async (req, res) => {
     console.error("Error deleting order:", error);
     return res.status(500).json({ success: false, message: error.message });
   }
+};
+
+// Delete order (admin only)
+export const deleteOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.json({ success: false, message: "Commande non trouvée" });
+    }
+
+    await orderModel.findByIdAndDelete(orderId);
+    res.json({ success: true, message: "Commande supprimée avec succès" });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
 }; 
