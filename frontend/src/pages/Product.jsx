@@ -25,6 +25,11 @@ const Product = () => {
     fetchProductData();
   }, [productId, products]);
 
+  // Effet pour gérer le scroll au chargement de la page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [productId]); // Se déclenche à chaque changement de produit
+
   const handleBuyNow = async () => {
     try {
       setLoading(true);

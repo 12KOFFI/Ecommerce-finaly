@@ -1,38 +1,61 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 const ProductItem = ({ id, image, name, price }) => {
   const { currency } = useContext(ShopContext);
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
+  const navigate = useNavigate();
 
   const handleLikeClick = (e) => {
-    e.preventDefault(); // Empêcher la navigation
+    e.preventDefault();
     setIsLiked(!isLiked);
+  };
+
+  const handleTouchStart = () => {
+    setIsTouched(true);
+  };
+
+  const handleTouchEnd = () => {
+    setTimeout(() => setIsTouched(false), 200);
+  };
+
+  const handleProductClick = (e) => {
+    e.preventDefault();
+    // Naviguer vers la page du produit
+    navigate(`/product/${id}`);
+    // Réinitialiser le scroll en haut de la page
+    window.scrollTo(0, 0);
   };
   
   return (
     <Link 
       to={`/product/${id}`} 
-      className="group relative block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
+      onClick={handleProductClick}
+      className="group relative block bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 active:scale-95"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      {/* Badge Nouveau - à adapter selon vos besoins */}
+      {/* Badge Nouveau */}
       <div className="absolute top-2 left-2 z-10">
-        <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">Nouveau</span>
+        <span className="bg-orange-500 text-white text-[10px] md:text-xs px-2 py-1 rounded-full font-medium">
+          Nouveau
+        </span>
       </div>
 
       {/* Bouton Favori */}
       <button
         onClick={handleLikeClick}
-        className={`absolute top-2 right-2 z-10 p-2 rounded-full transition-all duration-300 ${
+        className={`absolute top-2 right-2 z-10 p-1.5 md:p-2 rounded-full transition-all duration-300 ${
           isLiked ? 'bg-red-500' : 'bg-white shadow-md hover:bg-gray-100'
-        }`}
+        } active:scale-90`}
       >
         <svg
-          className={`w-5 h-5 ${isLiked ? 'text-white' : 'text-gray-600'}`}
+          className={`w-4 h-4 md:w-5 md:h-5 ${isLiked ? 'text-white' : 'text-gray-600'}`}
           fill={isLiked ? "currentColor" : "none"}
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -50,7 +73,9 @@ const ProductItem = ({ id, image, name, price }) => {
       {/* Image Container */}
       <div className="relative overflow-hidden aspect-square rounded-t-lg">
         <img
-          className="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-110"
+          className={`w-full h-full object-cover transition-all duration-500 ${
+            isHovered || isTouched ? 'scale-110' : 'scale-100'
+          }`}
           src={Array.isArray(image) ? image[0] : image}
           alt={name}
           onError={(e) => {
@@ -59,37 +84,37 @@ const ProductItem = ({ id, image, name, price }) => {
           }}
         />
         
-        {/* Overlay sur hover */}
-        <div className={`absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 ${
-          isHovered ? 'opacity-100' : 'opacity-0'
+        {/* Overlay sur hover/touch */}
+        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${
+          isHovered || isTouched ? 'bg-opacity-10' : 'bg-opacity-0'
         }`} />
       </div>
 
       {/* Informations produit */}
-      <div className="p-4">
+      <div className="p-3 md:p-4">
         {/* Nom du produit */}
-        <h3 className="text-sm text-gray-700 font-medium line-clamp-2 mb-2 min-h-[2.5rem]">
+        <h3 className="text-xs md:text-sm text-gray-700 font-medium line-clamp-2 mb-1.5 md:mb-2 min-h-[2.5rem]">
           {name}
         </h3>
 
         {/* Prix et promotion */}
-        <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold text-gray-900">
+        <div className="flex flex-wrap items-baseline gap-1.5 md:gap-2">
+          <span className="text-base md:text-lg font-bold text-gray-900">
             {price.toLocaleString('fr-FR')} {currency}
           </span>
-          <span className="text-sm text-red-600 line-through">
+          <span className="text-xs md:text-sm text-red-600 line-through">
             {(price * 1.2).toLocaleString('fr-FR')} {currency}
           </span>
-          <span className="text-sm text-green-600 font-medium">-20%</span>
+          <span className="text-xs md:text-sm text-green-600 font-medium">-20%</span>
         </div>
 
         {/* Note et avis */}
-        <div className="flex items-center gap-1 mt-2">
+        <div className="flex items-center gap-1 mt-1.5 md:mt-2">
           <div className="flex">
             {[1, 2, 3, 4, 5].map((star) => (
               <svg
                 key={star}
-                className="w-4 h-4 text-yellow-400"
+                className="w-3 h-3 md:w-4 md:h-4 text-yellow-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -97,15 +122,15 @@ const ProductItem = ({ id, image, name, price }) => {
               </svg>
             ))}
           </div>
-          <span className="text-xs text-gray-500">(45)</span>
+          <span className="text-[10px] md:text-xs text-gray-500">(45)</span>
         </div>
 
         {/* Badge livraison */}
-        <div className="mt-3 flex items-center gap-2">
-          <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="mt-2 md:mt-3 flex items-center gap-1.5 md:gap-2">
+          <svg className="w-3 h-3 md:w-4 md:h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
           </svg>
-          <span className="text-xs text-green-600">Livraison gratuite</span>
+          <span className="text-[10px] md:text-xs text-green-600 font-medium">Livraison gratuite</span>
         </div>
       </div>
     </Link>
