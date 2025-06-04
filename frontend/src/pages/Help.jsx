@@ -8,23 +8,23 @@ const Help = () => {
   const faqData = [
     {
       question: "Comment passer une commande ?",
-      answer: "Pour passer une commande, parcourez notre catalogue, ajoutez les articles souhaités à votre panier, puis suivez le processus de paiement. Vous devrez vous connecter ou créer un compte pour finaliser votre commande."
+      answer: "Pour passer une commande sur TechMarket :\n1. Parcourez notre catalogue de produits\n2. Ajoutez les articles souhaités à votre panier\n3. Cliquez sur l'icône du panier\n4. Vérifiez votre commande\n5. Choisissez votre mode de paiement (Orange Money, MTN Money, etc.)\n6. Confirmez votre commande"
     },
     {
       question: "Quels sont les délais de livraison ?",
-      answer: "Les délais de livraison varient généralement entre 3 à 5 jours ouvrables pour les livraisons standard. Pour les livraisons express, comptez 1 à 2 jours ouvrables."
+      answer: "Nos délais de livraison varient selon votre localisation :\n- Abidjan : 24-48h\n- Autres villes principales : 2-4 jours\n- Autres localités : 3-7 jours\nVous recevrez un SMS de suivi dès l'expédition de votre commande."
     },
     {
       question: "Comment suivre ma commande ?",
-      answer: "Une fois votre commande expédiée, vous recevrez un email avec un numéro de suivi. Vous pouvez également suivre votre commande dans la section 'Mes Commandes' de votre compte."
+      answer: "Vous pouvez suivre votre commande de plusieurs façons :\n1. Dans votre espace client 'Mes Commandes'\n2. Via le numéro de suivi envoyé par SMS et email\n3. En contactant notre service client au +225 07 07 07 07 07"
     },
     {
       question: "Quelle est la politique de retour ?",
-      answer: "Nous acceptons les retours dans les 30 jours suivant la réception de votre commande. Les articles doivent être dans leur état d'origine, non utilisés et dans leur emballage d'origine."
+      answer: "Notre politique de retour est la suivante :\n- 7 jours pour changer d'avis\n- L'article doit être dans son état d'origine\n- Emballage d'origine intact\n- Contactez notre service client pour initier un retour\n- Les frais de retour sont à la charge du client"
     },
     {
-      question: "Comment contacter le service client ?",
-      answer: "Vous pouvez nous contacter par email à support@example.com ou par téléphone au +XX XXX XXX XXX du lundi au vendredi, de 9h à 18h."
+      question: "Quels sont les modes de paiement acceptés ?",
+      answer: "Nous acceptons les modes de paiement suivants :\n- Orange Money\n- MTN Mobile Money\n- Wave\n- Moov Money\n- Paiement à la livraison (Abidjan uniquement)"
     }
   ];
 
@@ -57,9 +57,10 @@ const Help = () => {
       <div className="space-y-2">
         <p>Nous proposons plusieurs options de livraison :</p>
         <ul className="list-disc pl-5 space-y-2">
-          <li>Livraison Standard (3-5 jours ouvrables) : Gratuite à partir de 50€</li>
-          <li>Livraison Express (1-2 jours ouvrables) : 9.99€</li>
-          <li>Click & Collect : Gratuit</li>
+          <li>Livraison Standard Abidjan (24-48h) : 2000 FCFA</li>
+          <li>Livraison Villes Principales (2-4 jours) : 3000 FCFA</li>
+          <li>Livraison Autres Localités (3-7 jours) : 5000 FCFA</li>
+          <li>Point Relais à Abidjan : 1000 FCFA</li>
         </ul>
       </div>
       <p>Toutes les commandes sont traitées sous 24h (jours ouvrables).</p>
@@ -70,12 +71,13 @@ const Help = () => {
     <div className="space-y-4">
       <h3 className="text-xl font-semibold">Politique de retour</h3>
       <div className="space-y-2">
-        <p>Notre politique de retour est simple et flexible :</p>
+        <p>Notre politique de retour est simple et claire :</p>
         <ul className="list-disc pl-5 space-y-2">
-          <li>30 jours pour retourner votre article</li>
+          <li>7 jours pour retourner votre article</li>
           <li>Article non utilisé et dans son emballage d'origine</li>
-          <li>Étiquette de retour gratuite</li>
-          <li>Remboursement sous 5 jours ouvrés</li>
+          <li>Contactez d'abord notre service client</li>
+          <li>Frais de retour à la charge du client</li>
+          <li>Remboursement sous 3 jours ouvrés après réception</li>
         </ul>
       </div>
     </div>
@@ -87,11 +89,11 @@ const Help = () => {
       <div className="space-y-2">
         <p>Nous acceptons les moyens de paiement suivants :</p>
         <ul className="list-disc pl-5 space-y-2">
-          <li>Cartes bancaires (Visa, Mastercard, American Express)</li>
-          <li>PayPal</li>
-          <li>Apple Pay</li>
-          <li>Google Pay</li>
-          <li>Paiement en 3x sans frais (à partir de 100€)</li>
+          <li>Orange Money</li>
+          <li>MTN Mobile Money</li>
+          <li>Wave</li>
+          <li>Moov Money</li>
+          <li>Paiement à la livraison (Abidjan uniquement)</li>
         </ul>
       </div>
     </div>
@@ -114,7 +116,7 @@ const Help = () => {
                   </span>
                 </button>
                 {openFaq === index && (
-                  <div className="px-6 py-4 bg-gray-50 text-gray-600">
+                  <div className="px-6 py-4 bg-gray-50 text-gray-600 whitespace-pre-line">
                     {faq.answer}
                   </div>
                 )}
@@ -168,12 +170,18 @@ const Help = () => {
         <p className="text-gray-600 mb-6">
           Notre équipe de support est disponible pour vous aider
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
           <a
-            href="mailto:support@example.com"
+            href="tel:+2250707070707"
             className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
           >
-            Nous contacter
+            Appeler le +225 07 07 07 07 07
+          </a>
+          <a
+            href="mailto:support@techmarket.ci"
+            className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
+          >
+            Envoyer un email
           </a>
         </div>
       </div>
