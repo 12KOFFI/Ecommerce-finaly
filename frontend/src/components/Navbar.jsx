@@ -115,7 +115,7 @@ const Navbar = () => {
             </button>
           </form>
           <a
-            href="http://localhost:5174"
+            href="https://admin-lovat-tau.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-4 p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
