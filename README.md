@@ -1,193 +1,78 @@
-# E-Commerce Application
+# 🛍️ Plateforme E-Commerce MERN – Projet de fin de Licence
 
-Une application e-commerce complète avec un backend Node.js/Express et un frontend React, offrant une expérience d'achat fluide et sécurisée.
+## 🎯 Présentation
 
-## 🌟 Fonctionnalités
+Ce projet est une **application e-commerce complète** développée avec la stack **MERN** (MongoDB, Express, React, Node.js) et stylisée avec **Tailwind CSS**.
 
-### Pour les Clients
-- 🛍️ Navigation des produits avec recherche et filtrage
-- 🛒 Gestion du panier d'achat
-- 📝 Processus de commande complet
-- 👤 Authentification utilisateur
-- 📦 Suivi des commandes
+Elle permet aux utilisateurs de :
+- Parcourir des produits
+- Ajouter/supprimer du panier
+- Simuler une commande
 
-### Pour les Administrateurs
-- ✨ Gestion des produits (CRUD)
-- 📊 Tableau de bord administrateur
-- 🔄 Gestion des commandes
-- 👥 Gestion des utilisateurs
+---
 
-## 🏗️ Architecture
+## 🌐 Lien du site déployé (Frontend)
 
-### Backend (Node.js/Express)
-```
-backend/
-├── controllers/
-│   ├── authController.js    # Gestion de l'authentification
-│   ├── productController.js # Gestion des produits
-│   └── orderController.js   # Gestion des commandes
-├── models/
-│   ├── userModel.js        # Schéma utilisateur
-│   ├── productModel.js     # Schéma produit
-│   └── orderModel.js       # Schéma commande
-├── middleware/
-│   ├── auth.js            # Middleware d'authentification
-│   ├── userAuth.js        # Auth utilisateur
-│   └── adminAuth.js       # Auth administrateur
-└── routes/
-    ├── authRoutes.js      # Routes d'authentification
-    ├── productRoutes.js   # Routes des produits
-    └── orderRoutes.js     # Routes des commandes
-```
+👉 [https://ton-site.vercel.app](https://ecommerce-finaly.vercel.app/)
 
-### Frontend (React)
-```
-frontend/
-├── src/
-│   ├── components/        # Composants réutilisables
-│   ├── pages/            # Pages de l'application
-│   ├── context/          # Contextes React
-│   ├── assets/           # Ressources statiques
-│   └── config/           # Configuration
-```
+## 🔗 API Backend (Render)
 
-## 🔄 Flux de Commande
+👉 [https://ton-backend.onrender.com](https://ecommerce-backend-uj1i.onrender.com)
 
-1. **Ajout au Panier**
-   - Sélection des produits
-   - Gestion des quantités
-   - Calcul du total
+---
 
-2. **Processus de Commande**
-   - Vérification de l'authentification
-   - Saisie des informations de livraison
-   - Choix du mode de paiement
-   - Validation de la commande
+## 📦 Technologies utilisées
 
-3. **Traitement de la Commande**
-   - Création de la commande dans la base de données
-   - Envoi de confirmation
-   - Redirection vers la page des commandes
-   - Vidage du panier
+### Frontend
+- React (Vite)
+- Tailwind CSS
+- Axios
+- Hébergé sur [Vercel](https://vercel.com/)
 
-## 🛠️ Installation
+### Backend
+- Node.js / Express
+- MongoDB (Mongoose)
+- Hébergé sur [Render](https://render.com/)
 
-1. **Cloner le projet**
-```bash
-git clone [URL_DU_REPO]
+---
+
+## ⚙️ Structure du projet
+
+ecommerce-finaly/
+├── frontend/         # Application frontend React
+│   ├── src/
+│   │   ├── pages/    # Pages React
+│   │   ├── components/ # Composants réutilisables
+│   │   ├── context/   # Context API
+│   │   └── config/    # Configuration
+│   ├── public/       # Assets publics
+│   └── .env          # Variables d'environnement
+│
+└── admin/           # Interface d'administration
 ```
 
-2. **Backend Setup**
-```bash
-cd backend
-npm install
-```
+## 🚀 Installation
 
-3. **Frontend Setup**
+### Prérequis
+
+- Node.js (v16 ou supérieur)
+- MongoDB
+- npm ou yarn
+
+### Installation Frontend
+
 ```bash
 cd frontend
 npm install
-```
-
-4. **Variables d'Environnement**
-Créer un fichier `.env` dans le dossier backend :
-```env
-PORT=5000
-MONGODB_URI=votre_uri_mongodb
-JWT_SECRET=votre_secret_jwt
-```
-
-Créer un fichier `.env` dans le dossier frontend :
-```env
-VITE_BACKEND_URL=http://localhost:5000
-```
-
-## 🚀 Démarrage
-
-1. **Lancer le Backend**
-```bash
-cd backend
-npm start
-```
-
-2. **Lancer le Frontend**
-```bash
-cd frontend
 npm run dev
 ```
 
-## 🔐 Authentification
+### Installation Backend
 
-L'application utilise JWT (JSON Web Tokens) pour l'authentification :
-- Les tokens sont stockés dans le localStorage
-- Middleware d'authentification pour les routes protégées
-- Différents niveaux d'accès (utilisateur/admin)
-
-## 💳 Gestion des Paiements
-
-Plusieurs options de paiement disponibles :
-- Paiement à la livraison (COD)
-- Stripe (intégration prévue)
-- RazorPay (intégration prévue)
-
-## 📦 Modèles de Données
-
-### Utilisateur
-```javascript
-{
-  name: String,
-  email: String,
-  password: String,
-  role: String,
-  // ...
-}
+```bash
+cd backend
+npm install
+npm run dev
 ```
 
-### Produit
-```javascript
-{
-  name: String,
-  description: String,
-  price: Number,
-  image: [String],
-  category: String,
-  // ...
-}
-```
 
-### Commande
-```javascript
-{
-  userId: ObjectId,
-  items: [{
-    productId: ObjectId,
-    quantity: Number,
-    price: Number
-  }],
-  totalAmount: Number,
-  shippingAddress: String,
-  status: String,
-  // ...
-}
-```
-
-## 🔜 Prochaines Étapes
-
-- [ ] Intégration des paiements en ligne
-- [ ] Système de notation des produits
-- [ ] Gestion des retours
-- [ ] Notifications en temps réel
-- [ ] Interface administrateur améliorée
-
-## 👥 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à :
-1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request
-
-## 📝 License
-
-MIT License - voir le fichier LICENSE pour plus de détails. 
