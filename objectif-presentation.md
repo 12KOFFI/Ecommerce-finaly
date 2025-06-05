@@ -1,6 +1,6 @@
 # Objectif de la présentation du projet – TechMarket
 
-L’objectif de cette présentation est de mettre en évidence le processus complet de conception, de développement et de déploiement d’une application e-commerce moderne baptisée TechMarket, réalisée dans le cadre de mon projet de fin de formation E2c Tic. Cette application simule une boutique en ligne complète, permettant aux utilisateurs de consulter des produits, d’ajouter des articles à leur panier, et de vivre une expérience d’achat fluide et intuitive.
+L’objectif de cette présentation est de mettre en évidence le processus complet de conception, de développement et de déploiement d’une application e-commerce moderne baptisée #TechMarket, réalisée dans le cadre de mon projet de fin de formation #E2c Tic. Cette application simule une boutique en ligne complète, permettant aux utilisateurs de consulter des produits, d’ajouter des articles à leur panier, et de vivre une expérience d’achat fluide et intuitive.
 
 À travers cette présentation, je souhaite :
 
