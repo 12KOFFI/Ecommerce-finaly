@@ -127,7 +127,7 @@ const Footer = () => {
         <div className="pt-8">
           <div className="flex flex-col md:flex-row justify-center items-center">
             <p className="text-gray-600 text-sm text-center">
-              © {new Date().getFullYear()} TechShop. Tous droits réservés.
+              © {new Date().getFullYear()} TechMarket. Tous droits réservés.
             </p>
           </div>
         </div>
