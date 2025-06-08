@@ -100,10 +100,10 @@ const ProductItem = ({ id, image, name, price }) => {
         {/* Prix et promotion */}
         <div className="flex flex-wrap items-baseline gap-1.5 md:gap-2">
           <span className="text-base md:text-lg font-bold text-gray-900">
-            {price.toLocaleString('fr-FR')} {currency}
+            {Math.round(price)} {currency}
           </span>
           <span className="text-xs md:text-sm text-red-600 line-through">
-            {(price * 1.2).toLocaleString('fr-FR')} {currency}
+            {Math.round(price * 1.2)} {currency}
           </span>
           <span className="text-xs md:text-sm text-green-600 font-medium">-20%</span>
         </div>

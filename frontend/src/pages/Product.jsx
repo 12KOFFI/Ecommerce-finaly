@@ -107,7 +107,7 @@ const Product = () => {
               <p className="text-sm text-gray-500">(122 avis)</p>
             </div>
             <p className="text-4xl font-bold text-gray-900">
-              {currency}{productData.price}
+             {Math.round(productData.price)} {currency}
             </p>
           </div>
 

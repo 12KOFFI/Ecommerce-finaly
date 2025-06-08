@@ -6,6 +6,9 @@ import axios from "axios";
 import { backendUrl } from "../config/config";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { FaPaypal, FaCcMastercard, FaCashRegister } from "react-icons/fa";
+import { ImMobile } from "react-icons/im";
+import { MdLocalAtm } from "react-icons/md";
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState("paypal");
@@ -19,8 +22,6 @@ const PlaceOrder = () => {
     email: "",
     street: "",
     city: "",
-    state: "",
-    zipcode: "",
     country: "",
     phone: ""
   });
@@ -67,8 +68,6 @@ const PlaceOrder = () => {
         email: 'email',
         street: 'rue',
         city: 'ville',
-        state: 'région',
-        zipcode: 'code postal',
         country: 'pays',
         phone: 'téléphone'
       };
@@ -94,7 +93,7 @@ const PlaceOrder = () => {
         };
       });
 
-      const shippingAddress = `${formData.street}, ${formData.city}, ${formData.state} ${formData.zipcode}, ${formData.country}`;
+      const shippingAddress = `${formData.street}, ${formData.city}, ${formData.country}`;
 
       const orderData = {
         items: orderItems,
@@ -143,14 +142,14 @@ const PlaceOrder = () => {
                   <h3 className="text-sm font-medium">{product.name}</h3>
                   <p className="text-sm text-gray-500">Quantité: {quantity}</p>
                 </div>
-                <p className="font-medium">{currency}{product.price * quantity}</p>
+                <p className="font-medium">{currency}{Math.round(product.price * quantity)}</p>
               </div>
             );
           })}
           <div className="border-t pt-4 mt-4">
             <div className="flex justify-between text-sm">
               <span>Sous-total</span>
-              <span>{currency}{calculateTotal()}</span>
+              <span>{currency}{Math.round(calculateTotal())}</span>
             </div>
             <div className="flex justify-between text-sm mt-2">
               <span>Frais de livraison</span>
@@ -158,7 +157,7 @@ const PlaceOrder = () => {
             </div>
             <div className="flex justify-between font-semibold text-lg mt-4">
               <span>Total</span>
-              <span>{currency}{calculateTotal() + 10}</span>
+              <span>{currency}{Math.round(calculateTotal() + 10)}</span>
             </div>
           </div>
         </div>
@@ -185,7 +184,7 @@ const PlaceOrder = () => {
                       value={formData.firstName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="John"
+                      placeholder="Koffi"
                     />
                   </div>
                   <div>
@@ -196,7 +195,7 @@ const PlaceOrder = () => {
                       value={formData.lastName}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="Doe"
+                      placeholder="Abdoul"
                     />
                   </div>
                 </div>
@@ -209,7 +208,7 @@ const PlaceOrder = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="john.doe@example.com"
+                    placeholder="koffi.abdoul@example.com"
                   />
                 </div>
 
@@ -221,7 +220,7 @@ const PlaceOrder = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="+33 6 12 34 56 78"
+                    placeholder="+225 07 01 02 03 04"
                   />
                 </div>
 
@@ -233,7 +232,7 @@ const PlaceOrder = () => {
                     value={formData.street}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                    placeholder="123 rue de la Paix"
+                    placeholder="Rue des Cocotiers, Abidjan"
                   />
                 </div>
 
@@ -246,32 +245,7 @@ const PlaceOrder = () => {
                       value={formData.city}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="Paris"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
-                    <input
-                      type="text"
-                      name="zipcode"
-                      value={formData.zipcode}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="75001"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Région</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="Île-de-France"
+                      placeholder="Abidjan"
                     />
                   </div>
                   <div>
@@ -282,7 +256,7 @@ const PlaceOrder = () => {
                       value={formData.country}
                       onChange={handleInputChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      placeholder="France"
+                      placeholder="Côte d'Ivoire"
                     />
                   </div>
                 </div>
@@ -290,55 +264,59 @@ const PlaceOrder = () => {
             </div>
 
             {/* Méthode de paiement */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-6">Mode de paiement</h2>
-              <div className="space-y-4">
-                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="paypal"
-                    checked={method === "paypal"}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="w-4 h-4 text-orange-600"
-                  />
-                  <div>
-                    <p className="font-medium">PayPal</p>
-                    <p className="text-sm text-gray-500">Paiement sécurisé via PayPal</p>
-                  </div>
-                </label>
+            <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+  <input
+    type="radio"
+    name="payment"
+    value="paypal"
+    checked={method === "paypal"}
+    onChange={(e) => setMethod(e.target.value)}
+    className="w-4 h-4 text-orange-600"
+  />
+  <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
+      <FaPaypal className="w-6 h-6 text-gray-600" />
+      <p className="font-medium">PayPal</p>
+    </div>
+    <p className="text-sm text-gray-500">Paiement sécurisé via PayPal</p>
+  </div>
+</label>
 
-                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="wave"
-                    checked={method === "wave"}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="w-4 h-4 text-orange-600"
-                  />
-                  <div>
-                    <p className="font-medium">Wave</p>
-                    <p className="text-sm text-gray-500">Paiement mobile sécurisé via Wave</p>
-                  </div>
-                </label>
+<label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+  <input
+    type="radio"
+    name="payment"
+    value="wave"
+    checked={method === "wave"}
+    onChange={(e) => setMethod(e.target.value)}
+    className="w-4 h-4 text-orange-600"
+  />
+  <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
+      <ImMobile className="w-6 h-6 text-gray-600" />
+      <p className="font-medium">Wave</p>
+    </div>
+    <p className="text-sm text-gray-500">Paiement mobile sécurisé via Wave</p>
+  </div>
+</label>
 
-                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="cod"
-                    checked={method === "cod"}
-                    onChange={(e) => setMethod(e.target.value)}
-                    className="w-4 h-4 text-orange-600"
-                  />
-                  <div>
-                    <p className="font-medium">Paiement à la livraison</p>
-                    <p className="text-sm text-gray-500">Payez en espèces à la livraison</p>
-                  </div>
-                </label>
-              </div>
-            </div>
+<label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+  <input
+    type="radio"
+    name="payment"
+    value="cod"
+    checked={method === "cod"}
+    onChange={(e) => setMethod(e.target.value)}
+    className="w-4 h-4 text-orange-600"
+  />
+  <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2">
+      <MdLocalAtm className="w-6 h-6 text-gray-600" />
+      <p className="font-medium">Paiement à la livraison</p>
+    </div>
+    <p className="text-sm text-gray-500">Payez en espèces à la livraison</p>
+  </div>
+</label>
           </div>
 
           {/* Résumé de la commande */}

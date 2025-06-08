@@ -14,19 +14,19 @@ export const CartTotal = () => {
       <div className="space-y-4">
         <div className="flex justify-between items-center text-gray-600">
           <p>Sous-total</p>
-          <p className="font-medium">{currency}{subtotal.toFixed(2)}</p>
+          <p className="font-medium text-right">{Math.round(subtotal)} {currency}</p>
         </div>
 
         <div className="flex justify-between items-center text-gray-600">
           <p>Frais de livraison</p>
-          <p className="font-medium">{currency}{delivery_fee.toFixed(2)}</p>
+          <p className="font-medium text-right">{Math.round(delivery_fee)} {currency}</p>
         </div>
 
         <div className="h-px bg-gray-200 my-2"></div>
 
         <div className="flex justify-between items-center text-lg font-semibold">
           <p>Total</p>
-          <p>{currency}{total.toFixed(2)}</p>
+          <p className="text-right">{Math.round(total)} {currency}</p>
         </div>
 
         <p className="text-sm text-gray-500 mt-4">

@@ -125,8 +125,8 @@ const Cart = () => {
                         </button>
                       </div>
                       <p className="text-lg font-medium">
-                        {currency}
-                        {(productData.price * item.quantity).toFixed(2)}
+                       
+                        {Math.round(productData.price * item.quantity)} {currency}
                       </p>
                     </div>
                   </div>
